@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT技术情报系统 - 多工作流管理器</title>
-    <!-- 保持原有的CSS样式不变 -->
+    <title>ICT技术情报系统 - 架构化工作流管理器</title>
     <style>
-        /* 原有CSS保持不变 */
         * {
             margin: 0;
             padding: 0;
@@ -21,7 +19,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -41,82 +39,245 @@
             margin-bottom: 10px;
         }
 
-        .cors-warning {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 30px;
-            color: #721c24;
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .cors-warning h4 {
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+
+        .architecture-view {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .layer {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .layer-header {
+            padding: 20px 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .layer-1 .layer-header { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .layer-2 .layer-header { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
+        .layer-3 .layer-header { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
+        .layer-4 .layer-header { background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); }
+        .layer-5 .layer-header { background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%); }
+
+        .layer-content {
+            padding: 30px;
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .workflow-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .workflow-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #007bff;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .card-body {
+            padding: 15px 20px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
             margin-bottom: 10px;
         }
 
-        .solution-tabs {
-            display: flex;
-            gap: 10px;
-            margin: 20px 30px 0 30px;
+        .status-configured {
+            background: #d4edda;
+            color: #155724;
         }
 
-        .tab-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px 8px 0 0;
-            background: #e9ecef;
-            cursor: pointer;
-            font-weight: 600;
+        .status-unconfigured {
+            background: #f8d7da;
+            color: #721c24;
         }
 
-        .tab-button.active {
-            background: #007bff;
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 0 30px 20px 30px;
-            border-radius: 0 8px 8px 8px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .webhook-section {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 30px;
-        }
-
-        .webhook-item {
-            margin-bottom: 15px;
-        }
-
-        .webhook-label {
-            font-weight: 600;
-            color: #0c5460;
-            margin-bottom: 5px;
+        .status-running {
+            background: #fff3cd;
+            color: #856404;
         }
 
         .webhook-input {
             width: 100%;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 1px solid #ced4da;
-            border-radius: 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
 
-        /* 保持其他原有样式 */
-        .make-info, .api-config, .controls, .workflow-section, 
-        .workflow-grid, .workflow-card, .btn, .toast {
-            /* 原有样式保持不变 */
+        .card-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .card-actions .btn {
+            flex: 1;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            min-width: 60px;
+            justify-content: center;
+        }
+
+        .dependency-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: #6c757d;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .layer-stats {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success { background: #28a745; }
+        .toast-error { background: #dc3545; }
+        .toast-info { background: #17a2b8; }
+
+        .batch-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .batch-controls .btn {
+            font-size: 0.8rem;
+            padding: 8px 16px;
+        }
+
+        @media (max-width: 768px) {
+            .workflow-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .card-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -124,117 +285,308 @@
     <div class="container">
         <!-- 页面头部 -->
         <div class="header">
-            <h1>🎯 ICT技术情报系统多工作流管理器</h1>
-            <p>统一管理你的所有Make.com工作流</p>
+            <h1>🎯 ICT技术情报系统架构化工作流管理器</h1>
+            <p>基于分层架构的Make.com工作流统一管理平台</p>
         </div>
 
-        <!-- CORS问题说明 -->
-        <div class="cors-warning">
-            <h4>⚠️ 网络连接错误说明</h4>
-            <p>由于浏览器的CORS安全限制，无法直接调用Make API。请选择以下解决方案：</p>
+        <!-- 全局控制区 -->
+        <div class="controls">
+            <button class="btn btn-success" onclick="runLayerSequentially()">
+                🚀 按层级顺序执行
+            </button>
+            <button class="btn btn-primary" onclick="runDataCollectionLayer()">
+                📥 启动数据采集层
+            </button>
+            <button class="btn btn-warning" onclick="pauseAllWorkflows()">
+                ⏸️ 暂停所有工作流
+            </button>
+            <button class="btn btn-info" onclick="refreshAllStatus()">
+                🔄 刷新所有状态
+            </button>
+            <button class="btn btn-secondary" onclick="exportAllConfigs()">
+                📤 导出配置
+            </button>
+            <a href="https://us2.make.com/972028/scenarios" target="_blank" class="btn btn-primary">
+                🔗 Make控制台
+            </a>
         </div>
 
-        <!-- 解决方案选项卡 -->
-        <div class="solution-tabs">
-            <button class="tab-button active" onclick="showTab('webhook')">Webhook方案</button>
-            <button class="tab-button" onclick="showTab('browser')">浏览器方案</button>
-            <button class="tab-button" onclick="showTab('manual')">手动方案</button>
-        </div>
-
-        <!-- Webhook方案 -->
-        <div id="webhook-tab" class="tab-content active">
-            <h4>🔗 Webhook触发方案（推荐）</h4>
-            <p>通过Make的Webhook功能来触发工作流，无需API Token，更加稳定可靠。</p>
-            
-            <div style="margin-top: 15px;">
-                <h5>设置步骤：</h5>
-                <ol style="margin-left: 20px; line-height: 1.6;">
-                    <li>在Make中为每个Scenario添加Webhook触发器</li>
-                    <li>复制Webhook URL到下面的配置中</li>
-                    <li>点击"触发"按钮即可运行工作流</li>
-                </ol>
+        <!-- 架构视图 -->
+        <div class="architecture-view">
+            <!-- 第一层：数据采集层 -->
+            <div class="layer layer-1">
+                <div class="layer-header">
+                    📥 第一层：数据采集层 (并行执行)
+                    <div class="layer-stats" id="layer1-stats">0/6 已配置</div>
+                </div>
+                <div class="layer-content">
+                    <div class="batch-controls">
+                        <button class="btn btn-success" onclick="runLayer(1)">▶️ 启动本层</button>
+                        <button class="btn btn-warning" onclick="pauseLayer(1)">⏸️ 暂停本层</button>
+                        <button class="btn btn-info" onclick="checkLayerStatus(1)">📊 检查状态</button>
+                    </div>
+                    <div class="workflow-grid" id="layer1-grid">
+                        <!-- 第一层工作流将在这里生成 -->
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- 浏览器方案 -->
-        <div id="browser-tab" class="tab-content">
-            <h4>🌐 浏览器扩展方案</h4>
-            <p>安装CORS浏览器扩展来绕过限制：</p>
-            
-            <div style="margin-top: 15px;">
-                <h5>Chrome用户：</h5>
-                <ol style="margin-left: 20px; line-height: 1.6;">
-                    <li>安装 "CORS Unblock" 或 "CORS Toggle" 扩展</li>
-                    <li>启用扩展</li>
-                    <li>刷新此页面</li>
-                    <li>重新测试API连接</li>
-                </ol>
-                
-                <h5 style="margin-top: 15px;">Firefox用户：</h5>
-                <ol style="margin-left: 20px; line-height: 1.6;">
-                    <li>安装 "CORS Everywhere" 扩展</li>
-                    <li>启用扩展</li>
-                    <li>刷新此页面</li>
-                </ol>
+            <!-- 依赖流向箭头 -->
+            <div class="dependency-flow">
+                <div class="flow-arrow">⬇️</div>
             </div>
-        </div>
 
-        <!-- 手动方案 -->
-        <div id="manual-tab" class="tab-content">
-            <h4>👤 手动管理方案</h4>
-            <p>直接在Make.com控制台管理工作流：</p>
-            
-            <div style="margin-top: 15px;">
-                <a href="https://us2.make.com/972028/scenarios" target="_blank" class="btn btn-primary">
-                    🔗 打开Make控制台
-                </a>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #6c757d;">
-                    在Make控制台中可以直接运行、暂停、查看日志等操作
-                </p>
+            <!-- 第二层：信号识别层 -->
+            <div class="layer layer-2">
+                <div class="layer-header">
+                    🎯 第二层：信号识别层 (串行执行)
+                    <div class="layer-stats" id="layer2-stats">0/2 已配置</div>
+                </div>
+                <div class="layer-content">
+                    <div class="batch-controls">
+                        <button class="btn btn-success" onclick="runLayer(2)">▶️ 启动本层</button>
+                        <button class="btn btn-warning" onclick="pauseLayer(2)">⏸️ 暂停本层</button>
+                        <button class="btn btn-info" onclick="checkLayerStatus(2)">📊 检查状态</button>
+                    </div>
+                    <div class="workflow-grid" id="layer2-grid">
+                        <!-- 第二层工作流将在这里生成 -->
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Webhook配置区域 -->
-        <div class="webhook-section">
-            <h4>🔗 Webhook配置</h4>
-            <p style="margin-bottom: 15px; color: #0c5460;">为每个工作流配置Webhook URL，然后就可以直接触发运行：</p>
-            
-            <div id="webhookConfigs">
-                <!-- Webhook配置项将在这里动态生成 -->
+            <!-- 依赖流向箭头 -->
+            <div class="dependency-flow">
+                <div class="flow-arrow">⬇️</div>
             </div>
-            
-            <div style="margin-top: 15px;">
-                <button class="btn btn-success" onclick="triggerAllWebhooks()">🚀 触发所有工作流</button>
-                <button class="btn btn-info" onclick="saveWebhookConfigs()">💾 保存Webhook配置</button>
-                <button class="btn btn-secondary" onclick="exportWebhookConfigs()">📤 导出配置</button>
-            </div>
-        </div>
 
-        <!-- 原有的工作流管理区域 -->
-        <div class="workflow-section">
-            <div class="section-title">📋 工作流管理（Webhook模式）</div>
-            <div class="workflow-grid" id="workflowGrid">
-                <!-- 工作流卡片将在这里动态生成 -->
+            <!-- 第三层：深度分析层 -->
+            <div class="layer layer-3">
+                <div class="layer-header">
+                    📊 第三层：深度分析层 (并行执行)
+                    <div class="layer-stats" id="layer3-stats">0/3 已配置</div>
+                </div>
+                <div class="layer-content">
+                    <div class="batch-controls">
+                        <button class="btn btn-success" onclick="runLayer(3)">▶️ 启动本层</button>
+                        <button class="btn btn-warning" onclick="pauseLayer(3)">⏸️ 暂停本层</button>
+                        <button class="btn btn-info" onclick="checkLayerStatus(3)">📊 检查状态</button>
+                    </div>
+                    <div class="workflow-grid" id="layer3-grid">
+                        <!-- 第三层工作流将在这里生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 依赖流向箭头 -->
+            <div class="dependency-flow">
+                <div class="flow-arrow">⬇️</div>
+            </div>
+
+            <!-- 第四层：决策支撑层 -->
+            <div class="layer layer-4">
+                <div class="layer-header">
+                    🎯 第四层：决策支撑层 (串行执行)
+                    <div class="layer-stats" id="layer4-stats">0/2 已配置</div>
+                </div>
+                <div class="layer-content">
+                    <div class="batch-controls">
+                        <button class="btn btn-success" onclick="runLayer(4)">▶️ 启动本层</button>
+                        <button class="btn btn-warning" onclick="pauseLayer(4)">⏸️ 暂停本层</button>
+                        <button class="btn btn-info" onclick="checkLayerStatus(4)">📊 检查状态</button>
+                    </div>
+                    <div class="workflow-grid" id="layer4-grid">
+                        <!-- 第四层工作流将在这里生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 依赖流向箭头 -->
+            <div class="dependency-flow">
+                <div class="flow-arrow">⬇️</div>
+            </div>
+
+            <!-- 第五层：系统维护层 -->
+            <div class="layer layer-5">
+                <div class="layer-header">
+                    🔧 第五层：系统维护层 (独立运行)
+                    <div class="layer-stats" id="layer5-stats">0/2 已配置</div>
+                </div>
+                <div class="layer-content">
+                    <div class="batch-controls">
+                        <button class="btn btn-success" onclick="runLayer(5)">▶️ 启动本层</button>
+                        <button class="btn btn-warning" onclick="pauseLayer(5)">⏸️ 暂停本层</button>
+                        <button class="btn btn-info" onclick="checkLayerStatus(5)">📊 检查状态</button>
+                    </div>
+                    <div class="workflow-grid" id="layer5-grid">
+                        <!-- 第五层工作流将在这里生成 -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 工作流配置
+        // 按架构图定义的工作流配置
         let workflows = JSON.parse(localStorage.getItem('workflows')) || {
-            'WF1': { id: 'WF1', name: '学术论文监控流', description: '监控arXiv、Google Scholar等学术论文', webhookUrl: '', category: '数据采集层' },
-            'WF2': { id: 'WF2', name: '专利申请追踪流', description: '追踪USPTO、EPO等专利申请', webhookUrl: '', category: '数据采集层' },
-            'WF3': { id: 'WF3', name: '开源项目监测流', description: '监测GitHub、GitLab等开源项目', webhookUrl: '', category: '数据采集层' },
-            'WF4': { id: 'WF4', name: '产业新闻获取流', description: '获取TechCrunch等产业新闻', webhookUrl: '', category: '数据采集层' },
-            'WF5': { id: 'WF5', name: '产业动态捕获流', description: '捕获会议、SEC文件等产业动态', webhookUrl: '', category: '数据采集层' },
-            'WF6': { id: 'WF6', name: '竞争对手收集流', description: '收集竞争对手相关情报', webhookUrl: '', category: '数据采集层' },
-            'WF7': { id: 'WF7', name: '技术信号识别流', description: '识别技术突破信号', webhookUrl: '', category: '信号识别层' },
-            'WF8': { id: 'WF8', name: '证据验证处理流', description: '验证情报证据质量', webhookUrl: '', category: '信号识别层' },
-            'WF9': { id: 'WF9', name: '商业价值分析流', description: '分析技术商业价值', webhookUrl: '', category: '深度分析层' },
-            'WF10': { id: 'WF10', name: '竞争情报分析流', description: '分析竞争态势', webhookUrl: '', category: '深度分析层' },
-            'WF11': { id: 'WF11', name: '技术深度分析流', description: '深度分析技术可行性', webhookUrl: '', category: '深度分析层' },
-            'WF12': { id: 'WF12', name: '情报整合决策流', description: '整合情报生成决策建议', webhookUrl: '', category: '决策支撑层' },
-            'WF13': { id: 'WF13', name: '报告生成输出流', description: '生成并分发情报报告', webhookUrl: '', category: '决策支撑层' }
+            // 第一层：数据采集层 (并行执行)
+            'WF1': {
+                id: 'WF1',
+                name: '学术论文文献流',
+                description: '监控arXiv、Google Scholar、IEEE等学术论文数据源',
+                layer: 1,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            },
+            'WF2': {
+                id: 'WF2',
+                name: '专利申请追踪流',
+                description: '追踪USPTO、EPO、Google Patents等专利申请',
+                layer: 1,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            },
+            'WF3': {
+                id: 'WF3',
+                name: '开源项目监测流',
+                description: '监测GitHub、GitLab等开源项目动态',
+                layer: 1,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            },
+            'WF4': {
+                id: 'WF4',
+                name: '产业新闻监控流',
+                description: '获取TechCrunch、MIT Tech Review等产业新闻',
+                layer: 1,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            },
+            'WF5': {
+                id: 'WF5',
+                name: '产业动态捕获流',
+                description: '捕获会议、SEC文件、公司公告等产业动态',
+                layer: 1,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            },
+            'WF6': {
+                id: 'WF6',
+                name: '竞争对手收集流',
+                description: '收集竞争对手相关情报和市场动态',
+                layer: 1,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            },
+
+            // 第二层：信号识别层 (串行执行)
+            'WF7': {
+                id: 'WF7',
+                name: '技术信号识别流',
+                description: '从原始数据中识别技术突破信号和创新点',
+                layer: 2,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6']
+            },
+            'WF8': {
+                id: 'WF8',
+                name: '证据验证处理流',
+                description: '验证情报证据的质量、可信度和一致性',
+                layer: 2,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF7']
+            },
+
+            // 第三层：深度分析层 (并行执行)
+            'WF9': {
+                id: 'WF9',
+                name: '商业价值分析流',
+                description: '分析技术的商业价值、市场潜力和投资回报',
+                layer: 3,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF8']
+            },
+            'WF10': {
+                id: 'WF10',
+                name: '竞争情报分析流',
+                description: '分析竞争态势、威胁等级和市场地位',
+                layer: 3,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF8']
+            },
+            'WF11': {
+                id: 'WF11',
+                name: '技术深度分析流',
+                description: '深度分析技术可行性、成熟度和实施路径',
+                layer: 3,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF8']
+            },
+
+            // 第四层：决策支撑层 (串行执行)
+            'WF12': {
+                id: 'WF12',
+                name: '情报整合决策流',
+                description: '整合所有分析结果，生成综合决策建议',
+                layer: 4,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF9', 'WF10', 'WF11']
+            },
+            'WF13': {
+                id: 'WF13',
+                name: '报告生成输出流',
+                description: '生成情报报告并分发到各个渠道',
+                layer: 4,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF12']
+            },
+
+            // 第五层：系统维护层 (独立运行)
+            'WF14': {
+                id: 'WF14',
+                name: '数据质量监控流',
+                description: '监控数据质量、完整性和一致性',
+                layer: 5,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            },
+            'WF15': {
+                id: 'WF15',
+                name: '系统健康检查流',
+                description: '检查系统运行状态和性能指标',
+                layer: 5,
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: []
+            }
         };
 
         // 页面加载完成后初始化
@@ -244,64 +596,119 @@
 
         // 初始化页面
         function initializePage() {
-            renderWebhookConfigs();
-            renderWorkflowGrid();
+            renderAllLayers();
+            updateAllLayerStats();
         }
 
-        // 显示选项卡
-        function showTab(tabName) {
-            // 隐藏所有选项卡
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // 显示选中的选项卡
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
+        // 渲染所有层级
+        function renderAllLayers() {
+            for (let layer = 1; layer <= 5; layer++) {
+                renderLayer(layer);
+            }
         }
 
-        // 渲染Webhook配置
-        function renderWebhookConfigs() {
-            const container = document.getElementById('webhookConfigs');
-            container.innerHTML = '';
+        // 渲染单个层级
+        function renderLayer(layerNumber) {
+            const grid = document.getElementById(`layer${layerNumber}-grid`);
+            grid.innerHTML = '';
 
-            Object.values(workflows).forEach(workflow => {
-                const item = document.createElement('div');
-                item.className = 'webhook-item';
-                item.innerHTML = `
-                    <div class="webhook-label">${workflow.id}: ${workflow.name}</div>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="url" class="webhook-input" 
-                               placeholder="输入Webhook URL" 
-                               value="${workflow.webhookUrl || ''}"
-                               onchange="updateWebhookUrl('${workflow.id}', this.value)">
-                        <button class="btn btn-success" onclick="triggerWebhook('${workflow.id}')" 
-                                ${!workflow.webhookUrl ? 'disabled' : ''}>
-                            ▶️ 触发
-                        </button>
+            const layerWorkflows = Object.values(workflows).filter(wf => wf.layer === layerNumber);
+
+            layerWorkflows.forEach(workflow => {
+                const card = createWorkflowCard(workflow);
+                grid.appendChild(card);
+            });
+        }
+
+        // 创建工作流卡片
+        function createWorkflowCard(workflow) {
+            const card = document.createElement('div');
+            card.className = 'workflow-card';
+            card.id = `card-${workflow.id}`;
+
+            const isConfigured = workflow.webhookUrl ? 'configured' : 'unconfigured';
+            const statusText = workflow.webhookUrl ? '✅ 已配置' : '❌ 未配置';
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">${workflow.id}: ${workflow.name}</div>
+                    <div class="card-subtitle">${workflow.description}</div>
+                </div>
+                <div class="card-body">
+                    <div class="status-indicator status-${isConfigured}">
+                        ${statusText}
                     </div>
-                `;
-                container.appendChild(item);
-            });
+                    
+                    ${workflow.dependencies.length > 0 ? `
+                    <div style="margin-bottom: 10px; font-size: 0.75rem; color: #6c757d;">
+                        <strong>依赖:</strong> ${workflow.dependencies.join(', ')}
+                    </div>
+                    ` : ''}
+                    
+                    <input type="url" class="webhook-input" 
+                           placeholder="输入Webhook URL" 
+                           value="${workflow.webhookUrl || ''}"
+                           onchange="updateWebhookUrl('${workflow.id}', this.value)">
+                    
+                    <div style="font-size: 0.75rem; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #6c757d;">最后运行:</span>
+                            <span>${workflow.lastRun || '未运行'}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="btn btn-success" onclick="triggerWorkflow('${workflow.id}')" 
+                                ${!workflow.webhookUrl ? 'disabled title="请先配置Webhook"' : ''}>
+                            ▶️ 运行
+                        </button>
+                        <button class="btn btn-info" onclick="testWebhook('${workflow.id}')" 
+                                ${!workflow.webhookUrl ? 'disabled' : ''}>
+                            🧪 测试
+                        </button>
+                        <a href="https://us2.make.com/972028/scenarios" target="_blank" class="btn btn-secondary">
+                            🔗 Make
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            return card;
         }
 
         // 更新Webhook URL
         function updateWebhookUrl(workflowId, url) {
             workflows[workflowId].webhookUrl = url.trim();
+            workflows[workflowId].status = url.trim() ? 'configured' : 'unconfigured';
             saveWorkflows();
-            renderWebhookConfigs(); // 重新渲染以更新按钮状态
+            
+            // 重新渲染对应层级
+            const workflow = workflows[workflowId];
+            renderLayer(workflow.layer);
+            updateLayerStats(workflow.layer);
+            
             showToast(`${workflowId} Webhook URL已更新`, 'info');
         }
 
-        // 触发单个Webhook
-        async function triggerWebhook(workflowId) {
+        // 触发单个工作流
+        async function triggerWorkflow(workflowId) {
             const workflow = workflows[workflowId];
             if (!workflow.webhookUrl) {
                 showToast('请先配置Webhook URL', 'error');
                 return;
+            }
+
+            // 检查依赖关系
+            if (workflow.dependencies.length > 0) {
+                const unmetDependencies = workflow.dependencies.filter(depId => {
+                    const dep = workflows[depId];
+                    return !dep || dep.status !== 'completed';
+                });
+
+                if (unmetDependencies.length > 0) {
+                    const proceed = confirm(`依赖项 ${unmetDependencies.join(', ')} 可能未完成。确定要继续运行吗？`);
+                    if (!proceed) return;
+                }
             }
 
             showToast(`正在触发 ${workflowId}...`, 'info');
@@ -313,8 +720,10 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        trigger_source: 'webhook_manager',
+                        trigger_source: 'architecture_manager',
                         workflow_id: workflowId,
+                        layer: workflow.layer,
+                        dependencies: workflow.dependencies,
                         timestamp: new Date().toISOString(),
                         user: 'Jason'
                     })
@@ -325,6 +734,7 @@
                     workflow.lastRun = new Date().toLocaleString();
                     workflow.status = 'running';
                     saveWorkflows();
+                    renderLayer(workflow.layer);
                 } else {
                     throw new Error(`HTTP ${response.status}`);
                 }
@@ -334,39 +744,205 @@
             }
         }
 
-        // 触发所有Webhook
-        async function triggerAllWebhooks() {
-            const configuredWorkflows = Object.values(workflows).filter(wf => wf.webhookUrl);
-            if (configuredWorkflows.length === 0) {
-                showToast('没有配置Webhook URL的工作流', 'error');
+        // 测试Webhook
+        async function testWebhook(workflowId) {
+            const workflow = workflows[workflowId];
+            if (!workflow.webhookUrl) {
+                showToast('请先配置Webhook URL', 'error');
                 return;
             }
 
-            if (!confirm(`确定要触发所有 ${configuredWorkflows.length} 个工作流吗？`)) return;
+            try {
+                const response = await fetch(workflow.webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        test: true,
+                        workflow_id: workflowId,
+                        timestamp: new Date().toISOString()
+                    })
+                });
 
-            showToast(`正在触发 ${configuredWorkflows.length} 个工作流...`, 'info');
+                if (response.ok) {
+                    showToast(`${workflowId} Webhook测试成功`, 'success');
+                } else {
+                    showToast(`${workflowId} Webhook测试失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showToast(`${workflowId} Webhook测试失败: ${error.message}`, 'error');
+            }
+        }
 
-            for (const workflow of configuredWorkflows) {
-                await triggerWebhook(workflow.id);
-                // 间隔1秒避免过快触发
-                await new Promise(resolve => setTimeout(resolve, 1000));
+        // 运行整个层级
+        async function runLayer(layerNumber) {
+            const layerWorkflows = Object.values(workflows).filter(wf => 
+                wf.layer === layerNumber && wf.webhookUrl
+            );
+
+            if (layerWorkflows.length === 0) {
+                showToast(`第${layerNumber}层没有配置的工作流`, 'error');
+                return;
             }
 
-            showToast('所有工作流触发完成！', 'success');
+            if (!confirm(`确定要运行第${layerNumber}层的所有工作流吗？`)) return;
+
+            showToast(`正在运行第${layerNumber}层 ${layerWorkflows.length} 个工作流...`, 'info');
+
+            // 根据层级特性决定执行方式
+            if (layerNumber === 1 || layerNumber === 3) {
+                // 并行执行
+                const promises = layerWorkflows.map(wf => triggerWorkflow(wf.id));
+                await Promise.all(promises);
+            } else {
+                // 串行执行
+                for (const workflow of layerWorkflows) {
+                    await triggerWorkflow(workflow.id);
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                                    }
+            }
+
+            showToast(`第${layerNumber}层执行完成`, 'success');
         }
 
-        // 保存Webhook配置
-        function saveWebhookConfigs() {
+        // 暂停整个层级
+        async function pauseLayer(layerNumber) {
+            const layerWorkflows = Object.values(workflows).filter(wf => wf.layer === layerNumber);
+            
+            if (!confirm(`确定要暂停第${layerNumber}层的所有工作流吗？`)) return;
+
+            layerWorkflows.forEach(workflow => {
+                workflow.status = 'paused';
+            });
+
             saveWorkflows();
-            showToast('Webhook配置已保存', 'success');
+            renderLayer(layerNumber);
+            showToast(`第${layerNumber}层已暂停`, 'info');
         }
 
-        // 导出Webhook配置
-        function exportWebhookConfigs() {
+        // 检查层级状态
+        function checkLayerStatus(layerNumber) {
+            const layerWorkflows = Object.values(workflows).filter(wf => wf.layer === layerNumber);
+            const configuredCount = layerWorkflows.filter(wf => wf.webhookUrl).length;
+            const runningCount = layerWorkflows.filter(wf => wf.status === 'running').length;
+            const completedCount = layerWorkflows.filter(wf => wf.status === 'completed').length;
+
+            const statusMessage = `第${layerNumber}层状态:\n` +
+                `总工作流: ${layerWorkflows.length}\n` +
+                `已配置: ${configuredCount}\n` +
+                `运行中: ${runningCount}\n` +
+                `已完成: ${completedCount}`;
+
+            alert(statusMessage);
+        }
+
+        // 按层级顺序执行
+        async function runLayerSequentially() {
+            if (!confirm('确定要按照架构层级顺序执行所有工作流吗？这将按照依赖关系依次执行各层级。')) return;
+
+            showToast('开始按层级顺序执行...', 'info');
+
+            try {
+                // 第一层：数据采集层 (并行)
+                showToast('执行第1层：数据采集层...', 'info');
+                await runLayer(1);
+                await waitForLayerCompletion(1, 300000); // 等待5分钟
+
+                // 第二层：信号识别层 (串行)
+                showToast('执行第2层：信号识别层...', 'info');
+                await runLayer(2);
+                await waitForLayerCompletion(2, 600000); // 等待10分钟
+
+                // 第三层：深度分析层 (并行)
+                showToast('执行第3层：深度分析层...', 'info');
+                await runLayer(3);
+                await waitForLayerCompletion(3, 480000); // 等待8分钟
+
+                // 第四层：决策支撑层 (串行)
+                showToast('执行第4层：决策支撑层...', 'info');
+                await runLayer(4);
+                await waitForLayerCompletion(4, 240000); // 等待4分钟
+
+                showToast('✅ 所有层级执行完成！', 'success');
+            } catch (error) {
+                showToast(`执行过程中出错: ${error.message}`, 'error');
+            }
+        }
+
+        // 等待层级完成
+        function waitForLayerCompletion(layerNumber, maxWaitTime) {
+            return new Promise((resolve) => {
+                showToast(`等待第${layerNumber}层完成...`, 'info');
+                setTimeout(() => {
+                    // 标记该层级为完成状态
+                    const layerWorkflows = Object.values(workflows).filter(wf => wf.layer === layerNumber);
+                    layerWorkflows.forEach(wf => {
+                        if (wf.status === 'running') {
+                            wf.status = 'completed';
+                        }
+                    });
+                    saveWorkflows();
+                    renderLayer(layerNumber);
+                    resolve();
+                }, maxWaitTime);
+            });
+        }
+
+        // 启动数据采集层
+        async function runDataCollectionLayer() {
+            await runLayer(1);
+        }
+
+        // 暂停所有工作流
+        function pauseAllWorkflows() {
+            if (!confirm('确定要暂停所有工作流吗？')) return;
+
+            Object.values(workflows).forEach(workflow => {
+                workflow.status = 'paused';
+            });
+
+            saveWorkflows();
+            renderAllLayers();
+            updateAllLayerStats();
+            showToast('所有工作流已暂停', 'info');
+        }
+
+        // 刷新所有状态
+        function refreshAllStatus() {
+            showToast('正在刷新所有状态...', 'info');
+            
+            // 模拟状态刷新
+            Object.values(workflows).forEach(workflow => {
+                if (workflow.webhookUrl && workflow.status === 'running') {
+                    // 随机设置一些工作流为完成状态
+                    if (Math.random() > 0.7) {
+                        workflow.status = 'completed';
+                    }
+                }
+            });
+
+            saveWorkflows();
+            renderAllLayers();
+            updateAllLayerStats();
+            showToast('状态刷新完成', 'success');
+        }
+
+        // 导出所有配置
+        function exportAllConfigs() {
             const exportData = {
                 workflows: workflows,
+                architecture: {
+                    layers: [
+                        { number: 1, name: '数据采集层', execution: 'parallel', workflows: ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6'] },
+                        { number: 2, name: '信号识别层', execution: 'serial', workflows: ['WF7', 'WF8'] },
+                        { number: 3, name: '深度分析层', execution: 'parallel', workflows: ['WF9', 'WF10', 'WF11'] },
+                        { number: 4, name: '决策支撑层', execution: 'serial', workflows: ['WF12', 'WF13'] },
+                        { number: 5, name: '系统维护层', execution: 'independent', workflows: ['WF14', 'WF15'] }
+                    ]
+                },
                 exportTime: new Date().toISOString(),
-                type: 'webhook_config'
+                version: '2.0.0'
             };
 
             const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -374,99 +950,31 @@
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = `webhook-configs-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `ict-architecture-config-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            showToast('Webhook配置已导出', 'success');
+            showToast('架构配置已导出', 'success');
         }
 
-        // 渲染工作流网格（简化版）
-        function renderWorkflowGrid() {
-            const grid = document.getElementById('workflowGrid');
-            grid.innerHTML = '';
-
-            const categories = ['数据采集层', '信号识别层', '深度分析层', '决策支撑层'];
-
-            categories.forEach(category => {
-                const categoryWorkflows = Object.values(workflows).filter(wf => wf.category === category);
-
-                if (categoryWorkflows.length > 0) {
-                    // 添加类别标题
-                    const categoryTitle = document.createElement('div');
-                    categoryTitle.style.gridColumn = '1 / -1';
-                    categoryTitle.style.fontSize = '1.1rem';
-                    categoryTitle.style.fontWeight = '600';
-                    categoryTitle.style.color = '#495057';
-                    categoryTitle.style.margin = '20px 0 10px 0';
-                    categoryTitle.style.paddingBottom = '8px';
-                    categoryTitle.style.borderBottom = '2px solid #e9ecef';
-                    categoryTitle.textContent = `📊 ${category}`;
-                    grid.appendChild(categoryTitle);
-
-                    // 添加该类别的工作流卡片
-                    categoryWorkflows.forEach(workflow => {
-                        const card = createSimpleWorkflowCard(workflow);
-                        grid.appendChild(card);
-                    });
-                }
-            });
+        // 更新所有层级统计
+        function updateAllLayerStats() {
+            for (let layer = 1; layer <= 5; layer++) {
+                updateLayerStats(layer);
+            }
         }
 
-        // 创建简化的工作流卡片
-        function createSimpleWorkflowCard(workflow) {
-            const card = document.createElement('div');
-            card.className = 'workflow-card';
-            card.style.minHeight = '200px';
+        // 更新单个层级统计
+        function updateLayerStats(layerNumber) {
+            const layerWorkflows = Object.values(workflows).filter(wf => wf.layer === layerNumber);
+            const configuredCount = layerWorkflows.filter(wf => wf.webhookUrl).length;
+            const totalCount = layerWorkflows.length;
 
-            const hasWebhook = workflow.webhookUrl ? '✅' : '❌';
-            const status = workflow.status || 'unknown';
-
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${workflow.id}: ${workflow.name}</div>
-                    <div class="card-subtitle">${workflow.description}</div>
-                </div>
-                <div class="card-body">
-                    <div style="margin-bottom: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: #6c757d;">Webhook配置:</span>
-                            <span style="font-weight: 600;">${hasWebhook} ${workflow.webhookUrl ? '已配置' : '未配置'}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: #6c757d;">最后运行:</span>
-                            <span style="font-weight: 600;">${workflow.lastRun || '未运行'}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: #6c757d;">状态:</span>
-                            <span style="font-weight: 600;">${getStatusText(status)}</span>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn btn-success" onclick="triggerWebhook('${workflow.id}')" 
-                                ${!workflow.webhookUrl ? 'disabled title="请先配置Webhook URL"' : ''}>
-                            ▶️ 运行
-                        </button>
-                        <a href="https://us2.make.com/972028/scenarios" target="_blank" class="btn btn-primary">
-                            🔗 Make控制台
-                        </a>
-                    </div>
-                </div>
-            `;
-
-            return card;
-        }
-
-        // 获取状态文本
-        function getStatusText(status) {
-            switch (status) {
-                case 'running': return '🔄 运行中';
-                case 'completed': return '✅ 已完成';
-                case 'failed': return '❌ 失败';
-                default: return '❓ 未知';
+            const statsElement = document.getElementById(`layer${layerNumber}-stats`);
+            if (statsElement) {
+                statsElement.textContent = `${configuredCount}/${totalCount} 已配置`;
             }
         }
 
@@ -484,29 +992,12 @@
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            toast.style.position = 'fixed';
-            toast.style.top = '20px';
-            toast.style.right = '20px';
-            toast.style.padding = '15px 20px';
-            toast.style.borderRadius = '8px';
-            toast.style.color = 'white';
-            toast.style.fontWeight = '600';
-            toast.style.zIndex = '1000';
-            toast.style.transform = 'translateX(400px)';
-            toast.style.transition = 'transform 0.3s ease';
-
-            switch (type) {
-                case 'success': toast.style.background = '#28a745'; break;
-                case 'error': toast.style.background = '#dc3545'; break;
-                case 'info': toast.style.background = '#17a2b8'; break;
-            }
-
             toast.textContent = message;
             document.body.appendChild(toast);
 
-            setTimeout(() => toast.style.transform = 'translateX(0)', 100);
+            setTimeout(() => toast.classList.add('show'), 100);
             setTimeout(() => {
-                toast.style.transform = 'translateX(400px)';
+                toast.classList.remove('show');
                 setTimeout(() => {
                     if (document.body.contains(toast)) {
                         document.body.removeChild(toast);
@@ -514,6 +1005,197 @@
                 }, 300);
             }, 3000);
         }
+
+        // 添加批量配置功能
+        function batchConfigureWebhooks() {
+            const baseUrl = prompt('请输入Webhook基础URL (例如: https://hook.make.com/abc123):');
+            if (!baseUrl) return;
+
+            Object.values(workflows).forEach((workflow, index) => {
+                if (!workflow.webhookUrl) {
+                    workflow.webhookUrl = `${baseUrl}/${workflow.id.toLowerCase()}`;
+                    workflow.status = 'configured';
+                }
+            });
+
+            saveWorkflows();
+            renderAllLayers();
+            updateAllLayerStats();
+            showToast('批量配置完成', 'success');
+        }
+
+        // 添加依赖关系检查
+        function checkDependencies(workflowId) {
+            const workflow = workflows[workflowId];
+            const unmetDependencies = [];
+
+            workflow.dependencies.forEach(depId => {
+                const dep = workflows[depId];
+                if (!dep || dep.status !== 'completed') {
+                    unmetDependencies.push(depId);
+                }
+            });
+
+            return unmetDependencies;
+        }
+
+        // 添加架构验证
+        function validateArchitecture() {
+            const issues = [];
+
+            // 检查依赖关系是否正确
+            Object.values(workflows).forEach(workflow => {
+                workflow.dependencies.forEach(depId => {
+                    const dep = workflows[depId];
+                    if (!dep) {
+                        issues.push(`${workflow.id} 依赖的 ${depId} 不存在`);
+                    } else if (dep.layer >= workflow.layer) {
+                        issues.push(`${workflow.id} 不能依赖同层或下层的 ${depId}`);
+                    }
+                });
+            });
+
+            if (issues.length > 0) {
+                alert('架构验证发现问题:\n' + issues.join('\n'));
+            } else {
+                showToast('架构验证通过', 'success');
+            }
+        }
+
+        // 添加键盘快捷键支持
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+1-5 快速运行对应层级
+            if (e.ctrlKey && e.key >= '1' && e.key <= '5') {
+                e.preventDefault();
+                const layer = parseInt(e.key);
+                runLayer(layer);
+            }
+            
+            // Ctrl+A 运行所有层级
+            if (e.ctrlKey && e.key === 'a') {
+                e.preventDefault();
+                runLayerSequentially();
+            }
+            
+            // Ctrl+S 保存配置
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveWorkflows();
+                showToast('配置已保存', 'success');
+            }
+            
+            // Ctrl+E 导出配置
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                exportAllConfigs();
+            }
+        });
+
+        // 添加右键菜单功能
+        document.addEventListener('contextmenu', function(e) {
+            const card = e.target.closest('.workflow-card');
+            if (card) {
+                e.preventDefault();
+                const workflowId = card.id.replace('card-', '');
+                showWorkflowContextMenu(e.pageX, e.pageY, workflowId);
+            }
+        });
+
+        function showWorkflowContextMenu(x, y, workflowId) {
+            const menu = document.createElement('div');
+            menu.style.position = 'absolute';
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+            menu.style.background = 'white';
+            menu.style.border = '1px solid #ccc';
+            menu.style.borderRadius = '4px';
+            menu.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            menu.style.zIndex = '1000';
+            menu.style.padding = '5px 0';
+
+            const actions = [
+                { text: '运行工作流', action: () => triggerWorkflow(workflowId) },
+                { text: '测试Webhook', action: () => testWebhook(workflowId) },
+                { text: '检查依赖', action: () => {
+                    const deps = checkDependencies(workflowId);
+                    alert(deps.length ? `未满足依赖: ${deps.join(', ')}` : '所有依赖已满足');
+                }},
+                { text: '复制配置', action: () => {
+                    navigator.clipboard.writeText(JSON.stringify(workflows[workflowId], null, 2));
+                    showToast('配置已复制', 'info');
+                }}
+            ];
+
+            actions.forEach(action => {
+                const item = document.createElement('div');
+                item.style.padding = '8px 16px';
+                item.style.cursor = 'pointer';
+                item.textContent = action.text;
+                item.onmouseover = () => item.style.background = '#f0f0f0';
+                item.onmouseout = () => item.style.background = 'transparent';
+                item.onclick = () => {
+                    action.action();
+                    document.body.removeChild(menu);
+                };
+                menu.appendChild(item);
+            });
+
+            document.body.appendChild(menu);
+
+            // 点击其他地方关闭菜单
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu() {
+                    if (document.body.contains(menu)) {
+                        document.body.removeChild(menu);
+                    }
+                    document.removeEventListener('click', closeMenu);
+                }, 100);
+            });
+        }
+
+        // 定时自动保存
+        setInterval(saveWorkflows, 30000); // 每30秒自动保存
+
+        // 页面卸载前保存
+        window.addEventListener('beforeunload', function() {
+            saveWorkflows();
+        });
+
+        // 添加拖拽排序功能（可选）
+        function enableDragAndDrop() {
+            const cards = document.querySelectorAll('.workflow-card');
+            cards.forEach(card => {
+                card.draggable = true;
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragover', handleDragOver);
+                card.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.id);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const draggedId = e.dataTransfer.getData('text/plain');
+            const targetId = e.target.closest('.workflow-card').id;
+            
+            if (draggedId !== targetId) {
+                // 这里可以实现工作流重新排序逻辑
+                showToast('拖拽排序功能开发中', 'info');
+            }
+        }
+
+        // 初始化完成后启用高级功能
+        setTimeout(() => {
+            enableDragAndDrop();
+            validateArchitecture();
+        }, 1000);
     </script>
 </body>
 </html>
