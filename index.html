@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>技术情报系统 - 工作流管理器</title>
+    <title>ICT技术情报系统 - 工作流管理器</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -35,19 +35,54 @@
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin-bottom: 10px;
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             opacity: 0.9;
         }
 
-        .global-controls {
-            padding: 30px;
+        .make-info {
             background: #f8f9fa;
+            padding: 20px;
             border-bottom: 1px solid #e9ecef;
+        }
+
+        .make-info h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #495057;
+            font-family: 'Courier New', monospace;
+        }
+
+        .controls {
+            padding: 30px;
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
@@ -65,6 +100,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
 
         .btn:hover {
@@ -76,144 +112,94 @@
         .btn-success { background: #28a745; color: white; }
         .btn-danger { background: #dc3545; color: white; }
         .btn-warning { background: #ffc107; color: #212529; }
-        .btn-secondary { background: #6c757d; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
 
-        .workflow-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 25px;
-            padding: 30px;
-        }
-
-        .workflow-card {
+        .scenario-card {
+            margin: 20px 30px;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             overflow: hidden;
             border: 2px solid #e9ecef;
         }
 
-        .workflow-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-        }
-
         .card-header {
-            padding: 25px;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
             border-bottom: 1px solid #dee2e6;
         }
 
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #495057;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .card-subtitle {
-            font-size: 0.95rem;
             color: #6c757d;
-            margin-bottom: 15px;
-        }
-
-        .status-toggle {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background: #ccc;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .toggle-switch.active {
-            background: #28a745;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(30px);
-        }
-
-        .status-text {
-            font-weight: 600;
             font-size: 0.9rem;
         }
 
-        .status-active { color: #28a745; }
-        .status-inactive { color: #dc3545; }
-
         .card-body {
-            padding: 25px;
+            padding: 20px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-unknown {
+            background: #e2e3e5;
+            color: #383d41;
         }
 
         .config-section {
             margin-bottom: 20px;
         }
 
-        .config-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         .config-item {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
         }
 
         .config-label {
-            min-width: 100px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #6c757d;
-            font-weight: 500;
         }
 
-        .config-input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
+        .config-value {
+            font-weight: 600;
+            color: #495057;
+            font-family: 'Courier New', monospace;
             font-size: 0.85rem;
-            transition: border-color 0.3s;
-        }
-
-        .config-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
         }
 
         .card-actions {
             display: flex;
             gap: 10px;
             margin-top: 20px;
-            padding-top: 20px;
+            padding-top: 15px;
             border-top: 1px solid #e9ecef;
         }
 
@@ -246,35 +232,40 @@
         .toast-error { background: #dc3545; }
         .toast-info { background: #17a2b8; }
 
-        .layer-divider {
-            grid-column: 1 / -1;
-            text-align: center;
+        .api-config {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
             padding: 20px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #495057;
-            background: linear-gradient(90deg, transparent, #e9ecef, transparent);
-            margin: 10px 0;
+            margin: 20px 30px;
+        }
+
+        .api-config h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .api-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
         }
 
         @media (max-width: 768px) {
-            .workflow-grid {
-                grid-template-columns: 1fr;
+            .controls {
+                flex-direction: column;
                 padding: 20px;
             }
             
-            .global-controls {
-                flex-direction: column;
+            .info-grid {
+                grid-template-columns: 1fr;
             }
             
-            .config-item {
+            .card-actions {
                 flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-            
-            .config-label {
-                min-width: auto;
             }
         }
     </style>
@@ -283,489 +274,380 @@
     <div class="container">
         <!-- 页面头部 -->
         <div class="header">
-            <h1>🎯 技术情报系统工作流管理器</h1>
-            <p>配置和控制所有Make工作流的启动与停止</p>
+            <h1>🎯 ICT技术情报系统工作流管理器</h1>
+            <p>管理和监控你的Make.com工作流</p>
+        </div>
+
+        <!-- Make环境信息 -->
+        <div class="make-info">
+            <h3>🔧 当前Make环境信息</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Make服务器</div>
+                    <div class="info-value">us2.make.com</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Team ID</div>
+                    <div class="info-value">972028</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">当前Scenario ID</div>
+                    <div class="info-value">2196216</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">连接状态</div>
+                    <div class="info-value" id="connectionStatus">检查中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API配置区域 -->
+        <div class="api-config">
+            <h4>🔑 Make API配置</h4>
+            <p style="color: #856404; margin-bottom: 15px; font-size: 0.9rem;">
+                为了能够控制Make工作流，需要配置API Token。你可以在Make的个人设置中生成API Token。
+            </p>
+            <input type="password" id="apiToken" class="api-input" placeholder="输入你的Make API Token" />
+            <button class="btn btn-primary" onclick="saveApiToken()">💾 保存Token</button>
+            <button class="btn btn-info" onclick="testConnection()">🔍 测试连接</button>
         </div>
 
         <!-- 全局控制区 -->
-        <div class="global-controls">
-            <button class="btn btn-success" onclick="startDataCollectionLayer()">
-                🚀 启动数据采集层
+        <div class="controls">
+            <button class="btn btn-success" onclick="runScenario()">
+                ▶️ 运行当前工作流
             </button>
-            <button class="btn btn-primary" onclick="startAllWorkflows()">
-                ⚡ 启动所有工作流
+            <button class="btn btn-warning" onclick="pauseScenario()">
+                ⏸️ 暂停工作流
             </button>
-            <button class="btn btn-danger" onclick="stopAllWorkflows()">
-                🛑 停止所有工作流
+            <button class="btn btn-info" onclick="getScenarioStatus()">
+                📊 获取状态
             </button>
-            <button class="btn btn-warning" onclick="saveAllConfigs()">
-                💾 保存所有配置
-            </button>
-            <button class="btn btn-secondary" onclick="exportConfigs()">
-                📤 导出配置
-            </button>
+            <a href="https://us2.make.com/972028/scenarios/2196216/edit" target="_blank" class="btn btn-primary">
+                🔗 打开Make编辑器
+            </a>
+            <a href="https://us2.make.com/972028/scenarios/2196216/runs" target="_blank" class="btn btn-info">
+                📋 查看运行日志
+            </a>
         </div>
 
-        <!-- 工作流网格 -->
-        <div class="workflow-grid" id="workflowGrid">
-            <!-- 工作流卡片将在这里动态生成 -->
+        <!-- 工作流详情卡片 -->
+        <div class="scenario-card">
+            <div class="card-header">
+                <div class="card-title">Scenario 2196216: ICT技术情报处理流</div>
+                <div class="card-subtitle">当前配置的Make工作流</div>
+            </div>
+            <div class="card-body">
+                <div class="status-indicator status-unknown" id="scenarioStatus">
+                    ❓ 状态未知
+                </div>
+                
+                <div class="config-section">
+                    <div class="config-item">
+                        <span class="config-label">Scenario URL:</span>
+                        <span class="config-value">https://us2.make.com/972028/scenarios/2196216</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">最后运行:</span>
+                        <span class="config-value" id="lastRun">未知</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">运行次数:</span>
+                        <span class="config-value" id="runCount">未知</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">成功率:</span>
+                        <span class="config-value" id="successRate">未知</span>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-success" onclick="runScenario()">
+                        ▶️ 立即运行
+                    </button>
+                    <button class="btn btn-warning" onclick="cloneScenario()">
+                        📋 克隆工作流
+                    </button>
+                    <button class="btn btn-info" onclick="exportScenario()">
+                        📤 导出配置
+                    </button>
+                    <button class="btn btn-danger" onclick="resetScenario()">
+                        🔄 重置状态
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // 工作流配置数据
-        const workflowData = {
-            // 数据采集层
-            'WF1': {
-                name: '学术论文监控流',
-                description: '监控arXiv、Google Scholar、IEEE等学术论文数据源',
-                layer: '数据采集层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '00:30',
-                    frequency: 'daily',
-                    dataSource: 'arXiv + Google Scholar',
-                    outputTable: 'Raw_Academic_Papers'
-                }
-            },
-            'WF2': {
-                name: '专利申请追踪流',
-                description: '追踪USPTO、EPO、Google Patents等专利申请',
-                layer: '数据采集层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '00:30',
-                    frequency: 'daily',
-                    dataSource: 'USPTO + EPO + Google Patents',
-                    outputTable: 'Raw_Patent_Data'
-                }
-            },
-            'WF3': {
-                name: '开源项目监测流',
-                description: '监测GitHub、GitLab等开源项目动态',
-                layer: '数据采集层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '00:30',
-                    frequency: 'daily',
-                    dataSource: 'GitHub + GitLab',
-                    outputTable: 'Raw_OpenSource_Data'
-                }
-            },
-            'WF4': {
-                name: '产业新闻获取流',
-                description: '获取TechCrunch、MIT Tech Review等产业新闻',
-                layer: '数据采集层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '00:30',
-                    frequency: 'daily',
-                    dataSource: 'TechCrunch + MIT Tech Review',
-                    outputTable: 'Raw_Tech_News'
-                }
-            },
-            'WF5': {
-                name: '产业动态捕获流',
-                description: '捕获会议、SEC文件、公司公告等产业动态',
-                layer: '数据采集层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '00:30',
-                    frequency: 'daily',
-                    dataSource: '会议 + SEC文件',
-                    outputTable: 'Raw_Industry_Dynamics'
-                }
-            },
-            'WF6': {
-                name: '竞争对手收集流',
-                description: '收集竞争对手相关情报和动态',
-                layer: '数据采集层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '00:30',
-                    frequency: 'daily',
-                    dataSource: 'LinkedIn + Crunchbase',
-                    outputTable: 'Raw_Competitor_Intelligence'
-                }
-            },
-            // 信号识别层
-            'WF7': {
-                name: '技术信号识别流',
-                description: '从原始数据中识别技术突破信号',
-                layer: '信号识别层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '02:00',
-                    frequency: 'daily',
-                    dependencies: 'WF1-WF6完成',
-                    outputTable: 'Tech_Intelligence_Master'
-                }
-            },
-            'WF8': {
-                name: '证据验证处理流',
-                description: '验证情报证据的质量和可信度',
-                layer: '信号识别层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '04:00',
-                    frequency: 'daily',
-                    dependencies: 'WF7完成',
-                    outputTable: 'Evidence_Validation_Matrix'
-                }
-            },
-            // 深度分析层
-            'WF9': {
-                name: '商业价值分析流',
-                description: '分析技术的商业价值和市场潜力',
-                layer: '深度分析层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '05:30',
-                    frequency: 'daily',
-                    dependencies: 'WF8完成',
-                    outputTable: 'Commercial_Value_Quantification'
-                }
-            },
-            'WF10': {
-                name: '竞争情报分析流',
-                description: '分析竞争态势和威胁等级',
-                layer: '深度分析层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '05:30',
-                    frequency: 'daily',
-                    dependencies: 'WF8完成',
-                    outputTable: 'Competitive_Intelligence_Monitor'
-                }
-            },
-            'WF11': {
-                name: '技术深度分析流',
-                description: '深度分析技术可行性和成熟度',
-                layer: '深度分析层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '05:30',
-                    frequency: 'daily',
-                    dependencies: 'WF8完成',
-                    outputTable: 'Technical_Deep_Analysis'
-                }
-            },
-            // 决策支撑层
-            'WF12': {
-                name: '情报整合决策流',
-                description: '整合所有分析结果生成决策建议',
-                layer: '决策支撑层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '08:00',
-                    frequency: 'daily',
-                    dependencies: 'WF9-WF11完成',
-                    outputTable: 'Action_Recommendations'
-                }
-            },
-            'WF13': {
-                name: '报告生成输出流',
-                description: '生成并分发技术情报报告',
-                layer: '决策支撑层',
-                isActive: false,
-                config: {
-                    scenarioId: '',
-                    scheduleTime: '09:00',
-                    frequency: 'daily',
-                    dependencies: 'WF12完成',
-                    outputTable: '多渠道输出'
-                }
-            }
+        // Make API配置
+        let makeConfig = {
+            baseUrl: 'https://us2.make.com',
+            teamId: '972028',
+            scenarioId: '2196216',
+            apiToken: localStorage.getItem('makeApiToken') || ''
         };
 
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
-            loadSavedConfigs();
-            renderWorkflowGrid();
+            initializePage();
         });
 
-        // 从localStorage加载保存的配置
-        function loadSavedConfigs() {
-            const savedConfigs = localStorage.getItem('workflowConfigs');
-            if (savedConfigs) {
-                try {
-                    const configs = JSON.parse(savedConfigs);
-                    Object.keys(configs).forEach(workflowId => {
-                        if (workflowData[workflowId]) {
-                            workflowData[workflowId] = { ...workflowData[workflowId], ...configs[workflowId] };
-                        }
-                    });
-                } catch (error) {
-                    console.error('加载配置失败:', error);
-                }
+        // 初始化页面
+        function initializePage() {
+            loadApiToken();
+            if (makeConfig.apiToken) {
+                testConnection();
+                getScenarioStatus();
             }
         }
 
-        // 渲染工作流网格
-        function renderWorkflowGrid() {
-            const grid = document.getElementById('workflowGrid');
-            grid.innerHTML = '';
+        // 加载保存的API Token
+        function loadApiToken() {
+            const savedToken = localStorage.getItem('makeApiToken');
+            if (savedToken) {
+                makeConfig.apiToken = savedToken;
+                document.getElementById('apiToken').value = savedToken;
+            }
+        }
 
-            const layers = ['数据采集层', '信号识别层', '深度分析层', '决策支撑层'];
+        // 保存API Token
+        function saveApiToken() {
+            const token = document.getElementById('apiToken').value.trim();
+            if (!token) {
+                showToast('请输入API Token', 'error');
+                return;
+            }
             
-            layers.forEach(layer => {
-                // 添加层级分隔符
-                const divider = document.createElement('div');
-                divider.className = 'layer-divider';
-                divider.innerHTML = `📊 ${layer}`;
-                grid.appendChild(divider);
+            makeConfig.apiToken = token;
+            localStorage.setItem('makeApiToken', token);
+            showToast('API Token已保存', 'success');
+            
+            // 保存后自动测试连接
+            setTimeout(testConnection, 1000);
+        }
 
-                // 添加该层级的工作流卡片
-                Object.keys(workflowData).forEach(workflowId => {
-                    const workflow = workflowData[workflowId];
-                    if (workflow.layer === layer) {
-                        const card = createWorkflowCard(workflowId, workflow);
-                        grid.appendChild(card);
+        // 测试API连接
+        async function testConnection() {
+            if (!makeConfig.apiToken) {
+                showToast('请先配置API Token', 'error');
+                return;
+            }
+
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.textContent = '测试中...';
+            statusElement.style.color = '#ffc107';
+
+            try {
+                // 测试Make API连接
+                const response = await fetch(`${makeConfig.baseUrl}/api/v2/scenarios/${makeConfig.scenarioId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${makeConfig.apiToken}`,
+                        'Content-Type': 'application/json'
                     }
                 });
-            });
-        }
 
-        // 创建工作流卡片
-        function createWorkflowCard(workflowId, workflow) {
-            const card = document.createElement('div');
-            card.className = 'workflow-card';
-            card.id = `card-${workflowId}`;
-
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-title">${workflowId}: ${workflow.name}</div>
-                    <div class="card-subtitle">${workflow.description}</div>
-                    <div class="status-toggle">
-                        <div class="toggle-switch ${workflow.isActive ? 'active' : ''}" onclick="toggleWorkflow('${workflowId}')">
-                            <div class="toggle-slider"></div>
-                        </div>
-                        <span class="status-text ${workflow.isActive ? 'status-active' : 'status-inactive'}">
-                            ${workflow.isActive ? '✅ 已启用' : '❌ 已禁用'}
-                        </span>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="config-section">
-                        <div class="config-title">⚙️ 基础配置</div>
-                        <div class="config-item">
-                            <span class="config-label">Scenario ID:</span>
-                            <input type="text" class="config-input" value="${workflow.config.scenarioId}" 
-                                   placeholder="输入Make Scenario ID" 
-                                   onchange="updateConfig('${workflowId}', 'scenarioId', this.value)">
-                        </div>
-                        <div class="config-item">
-                            <span class="config-label">执行时间:</span>
-                            <input type="time" class="config-input" value="${workflow.config.scheduleTime}" 
-                                   onchange="updateConfig('${workflowId}', 'scheduleTime', this.value)">
-                        </div>
-                        <div class="config-item">
-                            <span class="config-label">执行频率:</span>
-                            <select class="config-input" onchange="updateConfig('${workflowId}', 'frequency', this.value)">
-                                <option value="daily" ${workflow.config.frequency === 'daily' ? 'selected' : ''}>每日</option>
-                                <option value="hourly" ${workflow.config.frequency === 'hourly' ? 'selected' : ''}>每小时</option>
-                                <option value="weekly" ${workflow.config.frequency === 'weekly' ? 'selected' : ''}>每周</option>
-                            </select>
-                        </div>
-                    </div>
+                if (response.ok) {
+                    statusElement.textContent = '✅ 连接成功';
+                    statusElement.style.color = '#28a745';
+                    showToast('Make API连接成功', 'success');
                     
-                    <div class="config-section">
-                        <div class="config-title">📊 运行信息</div>
-                        <div class="config-item">
-                            <span class="config-label">数据源:</span>
-                            <span class="config-input" style="border: none; background: #f8f9fa;">${workflow.config.dataSource || workflow.config.dependencies || '无'}</span>
-                        </div>
-                        <div class="config-item">
-                            <span class="config-label">输出表:</span>
-                            <span class="config-input" style="border: none; background: #f8f9fa;">${workflow.config.outputTable}</span>
-                        </div>
-                    </div>
-
-                    <div class="card-actions">
-                        <button class="btn btn-primary" onclick="openMakeScenario('${workflowId}')">
-                            🔗 打开Make
-                        </button>
-                        <button class="btn btn-success" onclick="testWorkflow('${workflowId}')">
-                            🧪 测试运行
-                        </button>
-                        <button class="btn btn-secondary" onclick="viewLogs('${workflowId}')">
-                            📋 查看日志
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            return card;
-        }
-
-        // 切换工作流启用/禁用状态
-        function toggleWorkflow(workflowId) {
-            const workflow = workflowData[workflowId];
-            workflow.isActive = !workflow.isActive;
-            
-            const card = document.getElementById(`card-${workflowId}`);
-            const toggle = card.querySelector('.toggle-switch');
-            const statusText = card.querySelector('.status-text');
-            
-            if (workflow.isActive) {
-                toggle.classList.add('active');
-                statusText.textContent = '✅ 已启用';
-                statusText.className = 'status-text status-active';
-                showToast(`${workflowId} 已启用`, 'success');
-            } else {
-                toggle.classList.remove('active');
-                statusText.textContent = '❌ 已禁用';
-                statusText.className = 'status-text status-inactive';
-                showToast(`${workflowId} 已禁用`, 'info');
-            }
-            
-            saveConfigs();
-        }
-
-        // 更新工作流配置
-        function updateConfig(workflowId, configKey, value) {
-            workflowData[workflowId].config[configKey] = value;
-            saveConfigs();
-            showToast(`${workflowId} 配置已更新`, 'info');
-        }
-
-        // 打开Make Scenario页面
-        function openMakeScenario(workflowId) {
-            const scenarioId = workflowData[workflowId].config.scenarioId;
-            if (scenarioId) {
-                const url = `https://www.make.com/en/my-scenarios/${scenarioId}`;
-                window.open(url, '_blank');
-            } else {
-                showToast('请先配置Scenario ID', 'error');
+                    // 连接成功后获取详细信息
+                    const data = await response.json();
+                    updateScenarioInfo(data);
+                } else if (response.status === 401) {
+                    statusElement.textContent = '❌ Token无效';
+                    statusElement.style.color = '#dc3545';
+                    showToast('API Token无效，请检查', 'error');
+                } else {
+                    statusElement.textContent = '❌ 连接失败';
+                    statusElement.style.color = '#dc3545';
+                    showToast(`连接失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                statusElement.textContent = '❌ 网络错误';
+                statusElement.style.color = '#dc3545';
+                showToast('网络连接错误', 'error');
+                console.error('连接测试失败:', error);
             }
         }
 
-        // 测试工作流运行
-        function testWorkflow(workflowId) {
-            const workflow = workflowData[workflowId];
-            if (!workflow.config.scenarioId) {
-                showToast('请先配置Scenario ID', 'error');
-                return;
-            }
-            
-            if (!workflow.isActive) {
-                showToast('请先启用该工作流', 'error');
+        // 运行Scenario
+        async function runScenario() {
+            if (!makeConfig.apiToken) {
+                showToast('请先配置API Token', 'error');
                 return;
             }
 
-            showToast(`正在测试 ${workflowId}...`, 'info');
-            
-            // 这里可以调用Make API进行测试
-            // 目前使用模拟测试
-            setTimeout(() => {
-                showToast(`${workflowId} 测试完成`, 'success');
-            }, 2000);
-        }
+            showToast('正在运行工作流...', 'info');
 
-        // 查看工作流日志
-        function viewLogs(workflowId) {
-            const scenarioId = workflowData[workflowId].config.scenarioId;
-            if (scenarioId) {
-                const url = `https://www.make.com/en/my-scenarios/${scenarioId}/runs`;
-                window.open(url, '_blank');
-            } else {
-                showToast('请先配置Scenario ID', 'error');
+            try {
+                const response = await fetch(`${makeConfig.baseUrl}/api/v2/scenarios/${makeConfig.scenarioId}/run`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Token ${makeConfig.apiToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showToast('工作流运行成功！', 'success');
+                    
+                    // 更新状态显示
+                    updateScenarioStatus('running');
+                    
+                    // 3秒后刷新状态
+                    setTimeout(getScenarioStatus, 3000);
+                } else {
+                    throw new Error(`运行失败: ${response.status}`);
+                }
+            } catch (error) {
+                showToast(`运行失败: ${error.message}`, 'error');
+                console.error('运行Scenario失败:', error);
             }
         }
 
-        // 启动数据采集层
-        function startDataCollectionLayer() {
-            const dataCollectionWorkflows = ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6'];
-            let enabledCount = 0;
-            
-            dataCollectionWorkflows.forEach(workflowId => {
-                if (!workflowData[workflowId].isActive) {
-                    workflowData[workflowId].isActive = true;
-                    enabledCount++;
+        // 暂停Scenario
+        async function pauseScenario() {
+            if (!makeConfig.apiToken) {
+                showToast('请先配置API Token', 'error');
+                return;
+            }
+
+            if (!confirm('确定要暂停这个工作流吗？')) return;
+
+            try {
+                const response = await fetch(`${makeConfig.baseUrl}/api/v2/scenarios/${makeConfig.scenarioId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Token ${makeConfig.apiToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        scheduling: {
+                            type: 'indefinitely'
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    showToast('工作流已暂停', 'success');
+                    updateScenarioStatus('paused');
+                } else {
+                    throw new Error(`暂停失败: ${response.status}`);
                 }
-            });
-            
-            renderWorkflowGrid();
-            saveConfigs();
-            showToast(`数据采集层 ${enabledCount} 个工作流已启用`, 'success');
+            } catch (error) {
+                showToast(`暂停失败: ${error.message}`, 'error');
+            }
         }
 
-        // 启动所有工作流
-        function startAllWorkflows() {
-            if (!confirm('确定要启用所有工作流吗？')) return;
-            
-            let enabledCount = 0;
-            Object.keys(workflowData).forEach(workflowId => {
-                if (!workflowData[workflowId].isActive) {
-                    workflowData[workflowId].isActive = true;
-                    enabledCount++;
+        // 获取Scenario状态
+        async function getScenarioStatus() {
+            if (!makeConfig.apiToken) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${makeConfig.baseUrl}/api/v2/scenarios/${makeConfig.scenarioId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${makeConfig.apiToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateScenarioInfo(data);
                 }
-            });
-            
-            renderWorkflowGrid();
-            saveConfigs();
-            showToast(`所有 ${enabledCount} 个工作流已启用`, 'success');
+            } catch (error) {
+                console.error('获取状态失败:', error);
+            }
         }
 
-        // 停止所有工作流
-        function stopAllWorkflows() {
-            if (!confirm('确定要禁用所有工作流吗？')) return;
+        // 更新Scenario信息
+        function updateScenarioInfo(data) {
+            // 更新状态显示
+            const isActive = data.scheduling && data.scheduling.type !== 'indefinitely';
+            updateScenarioStatus(isActive ? 'active' : 'inactive');
             
-            let disabledCount = 0;
-            Object.keys(workflowData).forEach(workflowId => {
-                if (workflowData[workflowId].isActive) {
-                    workflowData[workflowId].isActive = false;
-                    disabledCount++;
-                }
-            });
+            // 更新其他信息
+            if (data.lastRun) {
+                document.getElementById('lastRun').textContent = new Date(data.lastRun).toLocaleString();
+            }
             
-            renderWorkflowGrid();
-            saveConfigs();
-            showToast(`所有 ${disabledCount} 个工作流已禁用`, 'success');
+            // 这里可以根据Make API返回的实际数据结构来更新更多信息
         }
 
-        // 保存所有配置
-        function saveAllConfigs() {
-            saveConfigs();
-            showToast('所有配置已保存到本地存储', 'success');
+        // 更新Scenario状态显示
+        function updateScenarioStatus(status) {
+            const statusElement = document.getElementById('scenarioStatus');
+            
+            switch (status) {
+                case 'active':
+                    statusElement.className = 'status-indicator status-active';
+                    statusElement.innerHTML = '✅ 活跃状态';
+                    break;
+                case 'inactive':
+                    statusElement.className = 'status-indicator status-inactive';
+                    statusElement.innerHTML = '⏸️ 暂停状态';
+                    break;
+                case 'running':
+                    statusElement.className = 'status-indicator status-active';
+                    statusElement.innerHTML = '🔄 运行中';
+                    break;
+                default:
+                    statusElement.className = 'status-indicator status-unknown';
+                    statusElement.innerHTML = '❓ 状态未知';
+            }
+        }
+
+        // 克隆工作流
+        function cloneScenario() {
+            const cloneUrl = `${makeConfig.baseUrl}/${makeConfig.teamId}/scenarios/${makeConfig.scenarioId}/clone`;
+            window.open(cloneUrl, '_blank');
+            showToast('已打开克隆页面', 'info');
         }
 
         // 导出配置
-        function exportConfigs() {
-            const configData = JSON.stringify(workflowData, null, 2);
-            const blob = new Blob([configData], { type: 'application/json' });
+        function exportScenario() {
+            const config = {
+                makeConfig: makeConfig,
+                exportTime: new Date().toISOString(),
+                scenarioUrl: `${makeConfig.baseUrl}/${makeConfig.teamId}/scenarios/${makeConfig.scenarioId}`
+            };
+            
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
             const a = document.createElement('a');
             a.href = url;
-            a.download = `workflow-configs-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `make-scenario-${makeConfig.scenarioId}-config.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showToast('配置文件已导出', 'success');
+            showToast('配置已导出', 'success');
         }
 
-        // 保存配置到localStorage
-        function saveConfigs() {
-            try {
-                localStorage.setItem('workflowConfigs', JSON.stringify(workflowData));
-            } catch (error) {
-                console.error('保存配置失败:', error);
-                showToast('保存配置失败', 'error');
+        // 重置状态
+        function resetScenario() {
+            if (!confirm('确定要重置工作流状态吗？这将清除本地缓存的信息。')) return;
+            
+            // 清除本地状态
+            document.getElementById('lastRun').textContent = '未知';
+            document.getElementById('runCount').textContent = '未知';
+            document.getElementById('successRate').textContent = '未知';
+            updateScenarioStatus('unknown');
+            
+            showToast('状态已重置', 'info');
+            
+            // 重新获取状态
+            if (makeConfig.apiToken) {
+                setTimeout(getScenarioStatus, 1000);
             }
         }
 
