@@ -1371,7 +1371,7 @@
                                healthScore >= 60 ? '🟡 良好' : 
                                healthScore >= 40 ? '🟠 一般' : '🔴 需要关注';
             
-            const report = `🏛️ 西安ICT技术情报系统 - 状态报告
+            const report = `🏛️ ICT技术情报系统 - 状态报告
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📊 总体统计:
@@ -1414,7 +1414,7 @@ ${runningCount > 5 ? '\n🔄 当前有较多工作流在运行，请注意系统
         function exportConfigs() {
             const exportData = {
                 system_info: {
-                    name: '西安ICT技术情报系统',
+                    name: 'ICT技术情报系统',
                     version: '2.1.0',
                     location: 'Xi\'an, China',
                     exportTime: new Date().toISOString(),
@@ -1676,7 +1676,7 @@ ${runningCount > 5 ? '\n🔄 当前有较多工作流在运行，请注意系统
             updateSystemMetrics();
             
             // 显示欢迎消息
-            showToast('🏛️ 西安ICT工作流状态管理器已就绪！', 'success');
+            showToast('🏛️ ICT工作流状态管理器已就绪！', 'success');
             
             // 添加系统初始化日志
             addExecutionLog('SYSTEM', 'init', 'success', '系统初始化完成，所有组件已加载');
