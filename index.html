@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT技术情报系统 - 架构化工作流管理器</title>
+    <title>ICT技术情报系统 - 完整架构工作流管理器</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -113,10 +113,32 @@
             gap: 20px;
         }
 
+        .workflow-subgroup {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .subgroup-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .subgroup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
         .workflow-card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             border: 2px solid #e9ecef;
             transition: all 0.3s ease;
             overflow: hidden;
@@ -124,42 +146,42 @@
 
         .workflow-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
             border-color: #007bff;
         }
 
         .card-header {
-            padding: 15px 20px;
+            padding: 12px 15px;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-bottom: 1px solid #dee2e6;
         }
 
         .card-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #495057;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .card-subtitle {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #6c757d;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         .card-body {
-            padding: 15px 20px;
+            padding: 12px 15px;
         }
 
         .status-indicator {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.75rem;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .status-configured {
@@ -179,25 +201,25 @@
 
         .webhook-input {
             width: 100%;
-            padding: 6px 10px;
+            padding: 5px 8px;
             border: 1px solid #ced4da;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-family: 'Courier New', monospace;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .card-actions {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
         }
 
         .card-actions .btn {
             flex: 1;
-            font-size: 0.75rem;
-            padding: 6px 12px;
-            min-width: 60px;
+            font-size: 0.7rem;
+            padding: 5px 8px;
+            min-width: 50px;
             justify-content: center;
         }
 
@@ -231,6 +253,18 @@
             font-weight: 600;
         }
 
+        .batch-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .batch-controls .btn {
+            font-size: 0.8rem;
+            padding: 8px 16px;
+        }
+
         .toast {
             position: fixed;
             top: 20px;
@@ -253,30 +287,14 @@
         .toast-error { background: #dc3545; }
         .toast-info { background: #17a2b8; }
 
-        .batch-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .batch-controls .btn {
-            font-size: 0.8rem;
-            padding: 8px 16px;
-        }
-
         @media (max-width: 768px) {
-            .workflow-grid {
+            .workflow-grid, .subgroup-grid {
                 grid-template-columns: 1fr;
             }
             
             .controls {
                 flex-direction: column;
                 padding: 15px;
-            }
-            
-            .card-actions {
-                flex-direction: column;
             }
         }
     </style>
@@ -285,8 +303,8 @@
     <div class="container">
         <!-- 页面头部 -->
         <div class="header">
-            <h1>🎯 ICT技术情报系统架构化工作流管理器</h1>
-            <p>基于分层架构的Make.com工作流统一管理平台</p>
+            <h1>🎯 ICT技术情报系统完整架构工作流管理器</h1>
+            <p>基于真实分层架构的Make.com工作流统一管理平台 (包含WF7-1到WF7-6)</p>
         </div>
 
         <!-- 全局控制区 -->
@@ -340,7 +358,7 @@
             <div class="layer layer-2">
                 <div class="layer-header">
                     🎯 第二层：信号识别层 (串行执行)
-                    <div class="layer-stats" id="layer2-stats">0/2 已配置</div>
+                    <div class="layer-stats" id="layer2-stats">0/7 已配置</div>
                 </div>
                 <div class="layer-content">
                     <div class="batch-controls">
@@ -348,8 +366,22 @@
                         <button class="btn btn-warning" onclick="pauseLayer(2)">⏸️ 暂停本层</button>
                         <button class="btn btn-info" onclick="checkLayerStatus(2)">📊 检查状态</button>
                     </div>
+                    
+                    <!-- WF7子工作流组 -->
+                    <div class="workflow-subgroup">
+                        <div class="subgroup-title">🔍 WF7: 技术信号识别流组 (分表处理，并行执行)</div>
+                        <div class="batch-controls">
+                            <button class="btn btn-success" onclick="runWF7Subgroup()">▶️ 运行WF7子组</button>
+                            <button class="btn btn-info" onclick="batchConfigureWF7()">⚙️ 批量配置WF7</button>
+                        </div>
+                        <div class="subgroup-grid" id="wf7-subgroup">
+                            <!-- WF7-1到WF7-6将在这里生成 -->
+                        </div>
+                    </div>
+                    
+                    <!-- WF8独立工作流 -->
                     <div class="workflow-grid" id="layer2-grid">
-                        <!-- 第二层工作流将在这里生成 -->
+                        <!-- WF8将在这里生成 -->
                     </div>
                 </div>
             </div>
@@ -426,7 +458,7 @@
     </div>
 
     <script>
-        // 按架构图定义的工作流配置
+        // 按真实架构定义的完整工作流配置
         let workflows = JSON.parse(localStorage.getItem('workflows')) || {
             // 第一层：数据采集层 (并行执行)
             'WF1': {
@@ -437,7 +469,8 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                outputTable: 'Raw_Academic_Papers'
             },
             'WF2': {
                 id: 'WF2',
@@ -447,7 +480,8 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                outputTable: 'Raw_Patent_Data'
             },
             'WF3': {
                 id: 'WF3',
@@ -457,7 +491,8 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                outputTable: 'Raw_OpenSource_Data'
             },
             'WF4': {
                 id: 'WF4',
@@ -467,7 +502,8 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                outputTable: 'Raw_Tech_News'
             },
             'WF5': {
                 id: 'WF5',
@@ -477,7 +513,8 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                outputTable: 'Raw_Industry_Dynamics'
             },
             'WF6': {
                 id: 'WF6',
@@ -487,29 +524,103 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                outputTable: 'Raw_Competitor_Intelligence'
             },
 
             // 第二层：信号识别层 (串行执行)
-            'WF7': {
-                id: 'WF7',
-                name: '技术信号识别流',
-                description: '从原始数据中识别技术突破信号和创新点',
+            // WF7子工作流组 - 分表信号识别
+            'WF7-1': {
+                id: 'WF7-1',
+                name: '学术论文信号识别',
+                description: '从Raw_Academic_Papers表识别技术突破信号',
                 layer: 2,
+                subgroup: 'WF7',
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6']
+                dependencies: ['WF1'],
+                inputTable: 'Raw_Academic_Papers',
+                outputTable: 'Tech_Intelligence_Master'
             },
+            'WF7-2': {
+                id: 'WF7-2',
+                name: '专利数据信号识别',
+                description: '从Raw_Patent_Data表识别专利突破信号',
+                layer: 2,
+                subgroup: 'WF7',
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF2'],
+                inputTable: 'Raw_Patent_Data',
+                outputTable: 'Tech_Intelligence_Master'
+            },
+            'WF7-3': {
+                id: 'WF7-3',
+                name: '开源项目信号识别',
+                description: '从Raw_OpenSource_Data表识别项目创新信号',
+                layer: 2,
+                subgroup: 'WF7',
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF3'],
+                inputTable: 'Raw_OpenSource_Data',
+                outputTable: 'Tech_Intelligence_Master'
+            },
+            'WF7-4': {
+                id: 'WF7-4',
+                name: '技术新闻信号识别',
+                description: '从Raw_Tech_News表识别新闻价值信号',
+                layer: 2,
+                subgroup: 'WF7',
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF4'],
+                inputTable: 'Raw_Tech_News',
+                outputTable: 'Tech_Intelligence_Master'
+            },
+            'WF7-5': {
+                id: 'WF7-5',
+                name: '产业动态信号识别',
+                description: '从Raw_Industry_Dynamics表识别产业影响信号',
+                layer: 2,
+                subgroup: 'WF7',
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF5'],
+                inputTable: 'Raw_Industry_Dynamics',
+                outputTable: 'Tech_Intelligence_Master'
+            },
+            'WF7-6': {
+                id: 'WF7-6',
+                name: '竞争情报信号识别',
+                description: '从Raw_Competitor_Intelligence表识别威胁信号',
+                layer: 2,
+                subgroup: 'WF7',
+                webhookUrl: '',
+                status: 'unconfigured',
+                lastRun: null,
+                dependencies: ['WF6'],
+                inputTable: 'Raw_Competitor_Intelligence',
+                outputTable: 'Tech_Intelligence_Master'
+            },
+
+            // WF8 - 证据验证处理流
             'WF8': {
                 id: 'WF8',
                 name: '证据验证处理流',
-                description: '验证情报证据的质量、可信度和一致性',
+                description: '验证Tech_Intelligence_Master中情报的证据质量',
                 layer: 2,
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: ['WF7']
+                dependencies: ['WF7-1', 'WF7-2', 'WF7-3', 'WF7-4', 'WF7-5', 'WF7-6'],
+                inputTable: 'Tech_Intelligence_Master',
+                outputTable: 'Evidence_Validation_Matrix'
             },
 
             // 第三层：深度分析层 (并行执行)
@@ -521,7 +632,9 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: ['WF8']
+                dependencies: ['WF8'],
+                inputTable: 'Tech_Intelligence_Master (verified)',
+                outputTable: 'Commercial_Value_Quantification'
             },
             'WF10': {
                 id: 'WF10',
@@ -531,7 +644,9 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: ['WF8']
+                dependencies: ['WF8'],
+                inputTable: 'Tech_Intelligence_Master (verified)',
+                outputTable: 'Competitive_Intelligence_Monitor'
             },
             'WF11': {
                 id: 'WF11',
@@ -541,7 +656,9 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: ['WF8']
+                dependencies: ['WF8'],
+                inputTable: 'Tech_Intelligence_Master (verified)',
+                outputTable: 'Technical_Deep_Analysis'
             },
 
             // 第四层：决策支撑层 (串行执行)
@@ -553,7 +670,9 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: ['WF9', 'WF10', 'WF11']
+                dependencies: ['WF9', 'WF10', 'WF11'],
+                inputTable: '三维分析结果汇聚',
+                outputTable: 'Action_Recommendations'
             },
             'WF13': {
                 id: 'WF13',
@@ -563,7 +682,9 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: ['WF12']
+                dependencies: ['WF12'],
+                inputTable: 'Action_Recommendations',
+                outputTable: '多渠道输出'
             },
 
             // 第五层：系统维护层 (独立运行)
@@ -575,7 +696,9 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                inputTable: '全系统数据',
+                outputTable: 'Data_Quality_Reports'
             },
             'WF15': {
                 id: 'WF15',
@@ -585,7 +708,9 @@
                 webhookUrl: '',
                 status: 'unconfigured',
                 lastRun: null,
-                dependencies: []
+                dependencies: [],
+                inputTable: '系统运行日志',
+                outputTable: 'System_Health_Reports'
             }
         };
 
@@ -599,20 +724,53 @@
             renderAllLayers();
             updateAllLayerStats();
         }
-
-        // 渲染所有层级
+            // 渲染所有层级
         function renderAllLayers() {
-            for (let layer = 1; layer <= 5; layer++) {
-                renderLayer(layer);
+            renderLayer(1); // 数据采集层
+            renderLayer2WithSubgroups(); // 信号识别层（特殊处理）
+            renderLayer(3); // 深度分析层
+            renderLayer(4); // 决策支撑层
+            renderLayer(5); // 系统维护层
+        }
+
+        // 渲染第二层（包含WF7子组）
+        function renderLayer2WithSubgroups() {
+            // 渲染WF7子工作流组
+            const wf7Grid = document.getElementById('wf7-subgroup');
+            wf7Grid.innerHTML = '';
+
+            const wf7Workflows = Object.values(workflows).filter(wf => wf.subgroup === 'WF7');
+            wf7Workflows.forEach(workflow => {
+                const card = createWorkflowCard(workflow);
+                wf7Grid.appendChild(card);
+            });
+
+            // 渲染WF8
+            const layer2Grid = document.getElementById('layer2-grid');
+            layer2Grid.innerHTML = '';
+
+            const wf8 = workflows['WF8'];
+            if (wf8) {
+                const card = createWorkflowCard(wf8);
+                layer2Grid.appendChild(card);
             }
         }
 
         // 渲染单个层级
         function renderLayer(layerNumber) {
+            if (layerNumber === 2) {
+                renderLayer2WithSubgroups();
+                return;
+            }
+
             const grid = document.getElementById(`layer${layerNumber}-grid`);
+            if (!grid) return;
+
             grid.innerHTML = '';
 
-            const layerWorkflows = Object.values(workflows).filter(wf => wf.layer === layerNumber);
+            const layerWorkflows = Object.values(workflows).filter(wf => 
+                wf.layer === layerNumber && !wf.subgroup
+            );
 
             layerWorkflows.forEach(workflow => {
                 const card = createWorkflowCard(workflow);
@@ -640,8 +798,22 @@
                     </div>
                     
                     ${workflow.dependencies.length > 0 ? `
-                    <div style="margin-bottom: 10px; font-size: 0.75rem; color: #6c757d;">
+                    <div style="margin-bottom: 8px; font-size: 0.7rem; color: #6c757d;">
                         <strong>依赖:</strong> ${workflow.dependencies.join(', ')}
+                    </div>
+                    ` : ''}
+                    
+                    ${workflow.inputTable ? `
+                    <div style="margin-bottom: 6px; font-size: 0.7rem;">
+                        <span style="color: #6c757d;">输入表:</span>
+                        <span style="font-weight: 600; color: #495057;">${workflow.inputTable}</span>
+                    </div>
+                    ` : ''}
+                    
+                    ${workflow.outputTable ? `
+                    <div style="margin-bottom: 8px; font-size: 0.7rem;">
+                        <span style="color: #6c757d;">输出表:</span>
+                        <span style="font-weight: 600; color: #495057;">${workflow.outputTable}</span>
                     </div>
                     ` : ''}
                     
@@ -650,7 +822,7 @@
                            value="${workflow.webhookUrl || ''}"
                            onchange="updateWebhookUrl('${workflow.id}', this.value)">
                     
-                    <div style="font-size: 0.75rem; margin-bottom: 10px;">
+                    <div style="font-size: 0.7rem; margin-bottom: 8px;">
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: #6c757d;">最后运行:</span>
                             <span>${workflow.lastRun || '未运行'}</span>
@@ -684,7 +856,11 @@
             
             // 重新渲染对应层级
             const workflow = workflows[workflowId];
-            renderLayer(workflow.layer);
+            if (workflow.layer === 2) {
+                renderLayer2WithSubgroups();
+            } else {
+                renderLayer(workflow.layer);
+            }
             updateLayerStats(workflow.layer);
             
             showToast(`${workflowId} Webhook URL已更新`, 'info');
@@ -723,7 +899,10 @@
                         trigger_source: 'architecture_manager',
                         workflow_id: workflowId,
                         layer: workflow.layer,
+                        subgroup: workflow.subgroup || null,
                         dependencies: workflow.dependencies,
+                        input_table: workflow.inputTable || null,
+                        output_table: workflow.outputTable || null,
                         timestamp: new Date().toISOString(),
                         user: 'Jason'
                     })
@@ -734,7 +913,12 @@
                     workflow.lastRun = new Date().toLocaleString();
                     workflow.status = 'running';
                     saveWorkflows();
-                    renderLayer(workflow.layer);
+                    
+                    if (workflow.layer === 2) {
+                        renderLayer2WithSubgroups();
+                    } else {
+                        renderLayer(workflow.layer);
+                    }
                 } else {
                     throw new Error(`HTTP ${response.status}`);
                 }
@@ -777,9 +961,18 @@
 
         // 运行整个层级
         async function runLayer(layerNumber) {
-            const layerWorkflows = Object.values(workflows).filter(wf => 
-                wf.layer === layerNumber && wf.webhookUrl
-            );
+            let layerWorkflows;
+            
+            if (layerNumber === 2) {
+                // 第二层包含WF7子组和WF8
+                layerWorkflows = Object.values(workflows).filter(wf => 
+                    wf.layer === layerNumber && wf.webhookUrl
+                );
+            } else {
+                layerWorkflows = Object.values(workflows).filter(wf => 
+                    wf.layer === layerNumber && wf.webhookUrl && !wf.subgroup
+                );
+            }
 
             if (layerWorkflows.length === 0) {
                 showToast(`第${layerNumber}层没有配置的工作流`, 'error');
@@ -790,20 +983,67 @@
 
             showToast(`正在运行第${layerNumber}层 ${layerWorkflows.length} 个工作流...`, 'info');
 
-            // 根据层级特性决定执行方式
-            if (layerNumber === 1 || layerNumber === 3) {
-                // 并行执行
-                const promises = layerWorkflows.map(wf => triggerWorkflow(wf.id));
-                await Promise.all(promises);
+            if (layerNumber === 2) {
+                // 第二层特殊处理：先运行WF7子组，再运行WF8
+                const wf7Workflows = layerWorkflows.filter(wf => wf.subgroup === 'WF7');
+                const wf8Workflows = layerWorkflows.filter(wf => wf.id === 'WF8');
+
+                // 并行运行WF7子组
+                if (wf7Workflows.length > 0) {
+                    showToast('正在并行运行WF7子工作流组...', 'info');
+                    const wf7Promises = wf7Workflows.map(wf => triggerWorkflow(wf.id));
+                    await Promise.all(wf7Promises);
+                    
+                    // 等待WF7组完成
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                }
+
+                // 串行运行WF8
+                if (wf8Workflows.length > 0) {
+                    showToast('正在运行WF8证据验证流...', 'info');
+                    for (const workflow of wf8Workflows) {
+                        await triggerWorkflow(workflow.id);
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
             } else {
-                // 串行执行
-                for (const workflow of layerWorkflows) {
-                    await triggerWorkflow(workflow.id);
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                                    }
+                // 其他层级按原逻辑执行
+                if (layerNumber === 1 || layerNumber === 3) {
+                    // 并行执行
+                    const promises = layerWorkflows.map(wf => triggerWorkflow(wf.id));
+                    await Promise.all(promises);
+                } else {
+                    // 串行执行
+                    for (const workflow of layerWorkflows) {
+                        await triggerWorkflow(workflow.id);
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                    }
+                }
             }
 
             showToast(`第${layerNumber}层执行完成`, 'success');
+        }
+
+        // 运行WF7子工作流组
+        async function runWF7Subgroup() {
+            const wf7Workflows = Object.values(workflows).filter(wf => 
+                wf.subgroup === 'WF7' && wf.webhookUrl
+            );
+
+            if (wf7Workflows.length === 0) {
+                showToast('WF7子组没有配置的工作流', 'error');
+                return;
+            }
+
+            if (!confirm(`确定要并行运行WF7的所有子工作流吗？`)) return;
+
+            showToast(`正在并行运行WF7子组 ${wf7Workflows.length} 个工作流...`, 'info');
+
+            // 并行执行所有WF7子工作流
+            const promises = wf7Workflows.map(wf => triggerWorkflow(wf.id));
+            await Promise.all(promises);
+
+            showToast('WF7子工作流组执行完成', 'success');
         }
 
         // 暂停整个层级
@@ -817,7 +1057,11 @@
             });
 
             saveWorkflows();
-            renderLayer(layerNumber);
+            if (layerNumber === 2) {
+                renderLayer2WithSubgroups();
+            } else {
+                renderLayer(layerNumber);
+            }
             showToast(`第${layerNumber}层已暂停`, 'info');
         }
 
@@ -828,11 +1072,19 @@
             const runningCount = layerWorkflows.filter(wf => wf.status === 'running').length;
             const completedCount = layerWorkflows.filter(wf => wf.status === 'completed').length;
 
-            const statusMessage = `第${layerNumber}层状态:\n` +
+            let statusMessage = `第${layerNumber}层状态:\n` +
                 `总工作流: ${layerWorkflows.length}\n` +
                 `已配置: ${configuredCount}\n` +
                 `运行中: ${runningCount}\n` +
                 `已完成: ${completedCount}`;
+
+            if (layerNumber === 2) {
+                const wf7Count = layerWorkflows.filter(wf => wf.subgroup === 'WF7').length;
+                const wf7Configured = layerWorkflows.filter(wf => wf.subgroup === 'WF7' && wf.webhookUrl).length;
+                statusMessage += `\n\nWF7子组详情:\n` +
+                    `子工作流: ${wf7Count}\n` +
+                    `已配置: ${wf7Configured}`;
+            }
 
             alert(statusMessage);
         }
@@ -849,7 +1101,7 @@
                 await runLayer(1);
                 await waitForLayerCompletion(1, 300000); // 等待5分钟
 
-                // 第二层：信号识别层 (串行)
+                // 第二层：信号识别层 (WF7并行 + WF8串行)
                 showToast('执行第2层：信号识别层...', 'info');
                 await runLayer(2);
                 await waitForLayerCompletion(2, 600000); // 等待10分钟
@@ -883,7 +1135,11 @@
                         }
                     });
                     saveWorkflows();
-                    renderLayer(layerNumber);
+                    if (layerNumber === 2) {
+                        renderLayer2WithSubgroups();
+                    } else {
+                        renderLayer(layerNumber);
+                    }
                     resolve();
                 }, maxWaitTime);
             });
@@ -934,15 +1190,47 @@
                 workflows: workflows,
                 architecture: {
                     layers: [
-                        { number: 1, name: '数据采集层', execution: 'parallel', workflows: ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6'] },
-                        { number: 2, name: '信号识别层', execution: 'serial', workflows: ['WF7', 'WF8'] },
-                        { number: 3, name: '深度分析层', execution: 'parallel', workflows: ['WF9', 'WF10', 'WF11'] },
-                        { number: 4, name: '决策支撑层', execution: 'serial', workflows: ['WF12', 'WF13'] },
-                        { number: 5, name: '系统维护层', execution: 'independent', workflows: ['WF14', 'WF15'] }
+                        { 
+                            number: 1, 
+                            name: '数据采集层', 
+                            execution: 'parallel', 
+                            workflows: ['WF1', 'WF2', 'WF3', 'WF4', 'WF5', 'WF6'] 
+                        },
+                        { 
+                            number: 2, 
+                            name: '信号识别层', 
+                            execution: 'mixed', 
+                            workflows: ['WF7-1', 'WF7-2', 'WF7-3', 'WF7-4', 'WF7-5', 'WF7-6', 'WF8'],
+                            subgroups: {
+                                'WF7': {
+                                    name: '技术信号识别流组',
+                                    execution: 'parallel',
+                                    workflows: ['WF7-1', 'WF7-2', 'WF7-3', 'WF7-4', 'WF7-5', 'WF7-6']
+                                }
+                            }
+                        },
+                        { 
+                            number: 3, 
+                            name: '深度分析层', 
+                            execution: 'parallel', 
+                            workflows: ['WF9', 'WF10', 'WF11'] 
+                        },
+                        { 
+                            number: 4, 
+                            name: '决策支撑层', 
+                            execution: 'serial', 
+                            workflows: ['WF12', 'WF13'] 
+                        },
+                        { 
+                            number: 5, 
+                            name: '系统维护层', 
+                            execution: 'independent', 
+                            workflows: ['WF14', 'WF15'] 
+                        }
                     ]
                 },
                 exportTime: new Date().toISOString(),
-                version: '2.0.0'
+                version: '2.1.0'
             };
 
             const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -950,13 +1238,13 @@
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ict-architecture-config-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `ict-complete-architecture-config-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            showToast('架构配置已导出', 'success');
+            showToast('完整架构配置已导出', 'success');
         }
 
         // 更新所有层级统计
@@ -1006,12 +1294,13 @@
             }, 3000);
         }
 
-        // 添加批量配置功能
-        function batchConfigureWebhooks() {
-            const baseUrl = prompt('请输入Webhook基础URL (例如: https://hook.make.com/abc123):');
+        // 批量配置WF7子组
+        function batchConfigureWF7() {
+            const baseUrl = prompt('请输入WF7子组的Webhook基础URL:');
             if (!baseUrl) return;
 
-            Object.values(workflows).forEach((workflow, index) => {
+            const wf7Workflows = Object.values(workflows).filter(wf => wf.subgroup === 'WF7');
+            wf7Workflows.forEach(workflow => {
                 if (!workflow.webhookUrl) {
                     workflow.webhookUrl = `${baseUrl}/${workflow.id.toLowerCase()}`;
                     workflow.status = 'configured';
@@ -1019,47 +1308,9 @@
             });
 
             saveWorkflows();
-            renderAllLayers();
-            updateAllLayerStats();
-            showToast('批量配置完成', 'success');
-        }
-
-        // 添加依赖关系检查
-        function checkDependencies(workflowId) {
-            const workflow = workflows[workflowId];
-            const unmetDependencies = [];
-
-            workflow.dependencies.forEach(depId => {
-                const dep = workflows[depId];
-                if (!dep || dep.status !== 'completed') {
-                    unmetDependencies.push(depId);
-                }
-            });
-
-            return unmetDependencies;
-        }
-
-        // 添加架构验证
-        function validateArchitecture() {
-            const issues = [];
-
-            // 检查依赖关系是否正确
-            Object.values(workflows).forEach(workflow => {
-                workflow.dependencies.forEach(depId => {
-                    const dep = workflows[depId];
-                    if (!dep) {
-                        issues.push(`${workflow.id} 依赖的 ${depId} 不存在`);
-                    } else if (dep.layer >= workflow.layer) {
-                        issues.push(`${workflow.id} 不能依赖同层或下层的 ${depId}`);
-                    }
-                });
-            });
-
-            if (issues.length > 0) {
-                alert('架构验证发现问题:\n' + issues.join('\n'));
-            } else {
-                showToast('架构验证通过', 'success');
-            }
+            renderLayer2WithSubgroups();
+            updateLayerStats(2);
+            showToast('WF7子组批量配置完成', 'success');
         }
 
         // 添加键盘快捷键支持
@@ -1069,6 +1320,12 @@
                 e.preventDefault();
                 const layer = parseInt(e.key);
                 runLayer(layer);
+            }
+            
+            // Ctrl+7 快速运行WF7子组
+            if (e.ctrlKey && e.key === '7') {
+                e.preventDefault();
+                runWF7Subgroup();
             }
             
             // Ctrl+A 运行所有层级
@@ -1091,68 +1348,6 @@
             }
         });
 
-        // 添加右键菜单功能
-        document.addEventListener('contextmenu', function(e) {
-            const card = e.target.closest('.workflow-card');
-            if (card) {
-                e.preventDefault();
-                const workflowId = card.id.replace('card-', '');
-                showWorkflowContextMenu(e.pageX, e.pageY, workflowId);
-            }
-        });
-
-        function showWorkflowContextMenu(x, y, workflowId) {
-            const menu = document.createElement('div');
-            menu.style.position = 'absolute';
-            menu.style.left = x + 'px';
-            menu.style.top = y + 'px';
-            menu.style.background = 'white';
-            menu.style.border = '1px solid #ccc';
-            menu.style.borderRadius = '4px';
-            menu.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-            menu.style.zIndex = '1000';
-            menu.style.padding = '5px 0';
-
-            const actions = [
-                { text: '运行工作流', action: () => triggerWorkflow(workflowId) },
-                { text: '测试Webhook', action: () => testWebhook(workflowId) },
-                { text: '检查依赖', action: () => {
-                    const deps = checkDependencies(workflowId);
-                    alert(deps.length ? `未满足依赖: ${deps.join(', ')}` : '所有依赖已满足');
-                }},
-                { text: '复制配置', action: () => {
-                    navigator.clipboard.writeText(JSON.stringify(workflows[workflowId], null, 2));
-                    showToast('配置已复制', 'info');
-                }}
-            ];
-
-            actions.forEach(action => {
-                const item = document.createElement('div');
-                item.style.padding = '8px 16px';
-                item.style.cursor = 'pointer';
-                item.textContent = action.text;
-                item.onmouseover = () => item.style.background = '#f0f0f0';
-                item.onmouseout = () => item.style.background = 'transparent';
-                item.onclick = () => {
-                    action.action();
-                    document.body.removeChild(menu);
-                };
-                menu.appendChild(item);
-            });
-
-            document.body.appendChild(menu);
-
-            // 点击其他地方关闭菜单
-            setTimeout(() => {
-                document.addEventListener('click', function closeMenu() {
-                    if (document.body.contains(menu)) {
-                        document.body.removeChild(menu);
-                    }
-                    document.removeEventListener('click', closeMenu);
-                }, 100);
-            });
-        }
-
         // 定时自动保存
         setInterval(saveWorkflows, 30000); // 每30秒自动保存
 
@@ -1160,42 +1355,6 @@
         window.addEventListener('beforeunload', function() {
             saveWorkflows();
         });
-
-        // 添加拖拽排序功能（可选）
-        function enableDragAndDrop() {
-            const cards = document.querySelectorAll('.workflow-card');
-            cards.forEach(card => {
-                card.draggable = true;
-                card.addEventListener('dragstart', handleDragStart);
-                card.addEventListener('dragover', handleDragOver);
-                card.addEventListener('drop', handleDrop);
-            });
-        }
-
-        function handleDragStart(e) {
-            e.dataTransfer.setData('text/plain', e.target.id);
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            const draggedId = e.dataTransfer.getData('text/plain');
-            const targetId = e.target.closest('.workflow-card').id;
-            
-            if (draggedId !== targetId) {
-                // 这里可以实现工作流重新排序逻辑
-                showToast('拖拽排序功能开发中', 'info');
-            }
-        }
-
-        // 初始化完成后启用高级功能
-        setTimeout(() => {
-            enableDragAndDrop();
-            validateArchitecture();
-        }, 1000);
     </script>
 </body>
 </html>
