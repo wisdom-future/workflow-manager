@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT工作流配置器</title>
+    <title>ICT工作流状态管理器</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -15,38 +15,91 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             overflow: hidden;
         }
         
         .header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
+            position: relative;
         }
         
-        .header h1 { font-size: 2rem; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2rem; margin-bottom: 15px; }
+        .header p { font-size: 1.1rem; opacity: 0.9; }
+        
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .global-controls {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        
+        .btn-primary { background: linear-gradient(135deg, #007bff, #0056b3); }
+        .btn-success { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .btn-warning { background: linear-gradient(135deg, #ffc107, #e0a800); color: #212529; }
+        .btn-info { background: linear-gradient(135deg, #17a2b8, #138496); }
+        .btn-danger { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .btn-secondary { background: linear-gradient(135deg, #6c757d, #545b62); }
         
         .content { padding: 30px; }
         
         .layer-section {
             margin-bottom: 40px;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            border-radius: 15px;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         .layer-header {
-            padding: 20px;
-            font-weight: 600;
+            padding: 25px;
+            font-weight: 700;
             color: white;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
         
         .layer-1 { background: linear-gradient(135deg, #4CAF50, #45a049); }
@@ -55,116 +108,280 @@
         .layer-4 { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
         .layer-5 { background: linear-gradient(135deg, #F44336, #D32F2F); }
         
-        .workflows { padding: 20px; }
+        .layer-stats {
+            position: absolute;
+            right: 25px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .layer-controls {
+            padding: 20px 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .layer-controls .btn {
+            font-size: 0.9rem;
+            padding: 8px 16px;
+        }
+        
+        .workflows { padding: 25px; }
         
         .workflow-item {
             display: flex;
             align-items: center;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .workflow-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #007bff;
         }
         
         .workflow-info {
             flex: 1;
-            margin-right: 20px;
+            margin-right: 25px;
         }
         
         .workflow-name {
-            font-weight: 600;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
         }
         
         .workflow-desc {
-            font-size: 14px;
+            font-size: 0.9rem;
             color: #666;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .workflow-details {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: #6c757d;
         }
         
         .webhook-config {
             flex: 2;
             display: flex;
-            gap: 10px;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
         }
         
         .webhook-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            transition: all 0.3s ease;
+        }
+        
+        .webhook-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        
+        .workflow-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .workflow-actions .btn {
             flex: 1;
+            font-size: 0.8rem;
             padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
+            min-width: 80px;
+            justify-content: center;
         }
         
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
+        .status-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
             font-weight: 600;
-            cursor: pointer;
-            color: white;
-        }
-        
-        .btn-test { background: #17a2b8; }
-        .btn-run { background: #28a745; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 10px;
-            margin-bottom: 5px;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .status-unconfigured { background: #f8d7da; color: #721c24; }
         .status-configured { background: #d4edda; color: #155724; }
+        .status-connected { background: #cce5ff; color: #004085; }
+        .status-running { background: #fff3cd; color: #856404; animation: pulse 2s infinite; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+        .status-error { background: #f5c6cb; color: #721c24; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.4s ease;
+            max-width: 350px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .toast.show { transform: translateX(0); }
+        .toast-success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .toast-error { background: linear-gradient(135deg, #dc3545, #fd7e14); }
+        .toast-info { background: linear-gradient(135deg, #17a2b8, #6f42c1); }
+        .toast-warning { background: linear-gradient(135deg, #ffc107, #fd7e14); color: #212529; }
+        
+        .execution-log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            max-height: 100px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .show-log { display: block; }
+        
+        @media (max-width: 768px) {
+            .workflow-item { flex-direction: column; align-items: stretch; }
+            .workflow-info { margin-right: 0; margin-bottom: 15px; }
+            .global-controls { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <div class="status-badge" id="global-status">系统就绪</div>
             <h1>🎯 ICT技术情报系统</h1>
-            <p>工作流Webhook配置器</p>
+            <p>分层架构工作流状态管理器 - 实时监控与控制</p>
+        </div>
+        
+        <div class="global-controls">
+            <button class="btn btn-success" onclick="runAllLayers()">🚀 运行全部层级</button>
+            <button class="btn btn-info" onclick="refreshAllStatus()">🔄 刷新所有状态</button>
+            <button class="btn btn-warning" onclick="pauseAllWorkflows()">⏸️ 暂停所有工作流</button>
+            <button class="btn btn-primary" onclick="exportConfigs()">📤 导出配置</button>
+            <button class="btn btn-secondary" onclick="showSystemStatus()">📊 系统状态报告</button>
+            <a href="https://us2.make.com/972028/scenarios" target="_blank" class="btn btn-info">🔗 Make控制台</a>
         </div>
         
         <div class="content">
             <!-- 第一层：数据采集层 -->
             <div class="layer-section">
-                <div class="layer-header layer-1">📥 第一层：数据采集层 (并行执行)</div>
+                <div class="layer-header layer-1">
+                    📥 第一层：数据采集层 (并行执行)
+                    <div class="layer-stats" id="layer1-stats">0/6 已配置</div>
+                </div>
+                <div class="layer-controls">
+                    <button class="btn btn-success" onclick="runLayer('layer1')">▶️ 运行本层</button>
+                    <button class="btn btn-info" onclick="checkLayerStatus('layer1')">📊 检查状态</button>
+                    <button class="btn btn-warning" onclick="pauseLayer('layer1')">⏸️ 暂停本层</button>
+                </div>
                 <div class="workflows" id="layer1"></div>
             </div>
             
             <!-- 第二层：WF7子组 -->
             <div class="layer-section">
-                <div class="layer-header layer-2">🎯 第二层：WF7信号识别子组 (并行执行)</div>
+                <div class="layer-header layer-2">
+                    🎯 第二层：WF7信号识别子组 (并行执行)
+                    <div class="layer-stats" id="wf7-stats">0/6 已配置</div>
+                </div>
+                <div class="layer-controls">
+                    <button class="btn btn-success" onclick="runWF7Group()">▶️ 运行WF7子组</button>
+                    <button class="btn btn-info" onclick="checkWF7Status()">📊 WF7状态</button>
+                    <button class="btn btn-secondary" onclick="batchConfigureWF7()">⚙️ 批量配置</button>
+                </div>
                 <div class="workflows" id="wf7-group"></div>
             </div>
             
             <!-- 第二层：WF8 -->
             <div class="layer-section">
-                <div class="layer-header layer-2">🔍 第二层：证据验证处理流</div>
+                <div class="layer-header layer-2">
+                    🔍 第二层：证据验证处理流
+                    <div class="layer-stats" id="wf8-stats">0/1 已配置</div>
+                </div>
+                <div class="layer-controls">
+                    <button class="btn btn-success" onclick="runSingleWorkflow('WF8')">▶️ 运行WF8</button>
+                    <button class="btn btn-info" onclick="checkSingleStatus('WF8')">📊 检查状态</button>
+                </div>
                 <div class="workflows" id="wf8"></div>
             </div>
             
             <!-- 第三层：深度分析层 -->
             <div class="layer-section">
-                <div class="layer-header layer-3">📊 第三层：深度分析层 (并行执行)</div>
+                <div class="layer-header layer-3">
+                    📊 第三层：深度分析层 (并行执行)
+                    <div class="layer-stats" id="layer3-stats">0/3 已配置</div>
+                </div>
+                <div class="layer-controls">
+                    <button class="btn btn-success" onclick="runLayer('layer3')">▶️ 运行本层</button>
+                    <button class="btn btn-info" onclick="checkLayerStatus('layer3')">📊 检查状态</button>
+                    <button class="btn btn-warning" onclick="pauseLayer('layer3')">⏸️ 暂停本层</button>
+                </div>
                 <div class="workflows" id="layer3"></div>
             </div>
             
             <!-- 第四层：决策支撑层 -->
             <div class="layer-section">
-                <div class="layer-header layer-4">🎯 第四层：决策支撑层 (串行执行)</div>
+                <div class="layer-header layer-4">
+                    🎯 第四层：决策支撑层 (串行执行)
+                    <div class="layer-stats" id="layer4-stats">0/2 已配置</div>
+                </div>
+                <div class="layer-controls">
+                    <button class="btn btn-success" onclick="runLayer('layer4')">▶️ 运行本层</button>
+                    <button class="btn btn-info" onclick="checkLayerStatus('layer4')">📊 检查状态</button>
+                    <button class="btn btn-warning" onclick="pauseLayer('layer4')">⏸️ 暂停本层</button>
+                </div>
                 <div class="workflows" id="layer4"></div>
             </div>
             
             <!-- 第五层：系统维护层 -->
             <div class="layer-section">
-                <div class="layer-header layer-5">🔧 第五层：系统维护层 (独立运行)</div>
+                <div class="layer-header layer-5">
+                    🔧 第五层：系统维护层 (独立运行)
+                    <div class="layer-stats" id="layer5-stats">0/2 已配置</div>
+                </div>
+                <div class="layer-controls">
+                    <button class="btn btn-success" onclick="runLayer('layer5')">▶️ 运行本层</button>
+                    <button class="btn btn-info" onclick="checkLayerStatus('layer5')">📊 检查状态</button>
+                    <button class="btn btn-warning" onclick="pauseLayer('layer5')">⏸️ 暂停本层</button>
+                </div>
                 <div class="workflows" id="layer5"></div>
             </div>
         </div>
@@ -174,49 +391,55 @@
         // 工作流定义
         const workflowDefs = {
             // 第一层
-            'WF1': { name: '学术论文文献流', desc: '监控arXiv、Google Scholar、IEEE等学术论文数据源' },
-            'WF2': { name: '专利申请追踪流', desc: '追踪USPTO、EPO、Google Patents等专利申请' },
-            'WF3': { name: '开源项目监测流', desc: '监测GitHub、GitLab等开源项目动态' },
-            'WF4': { name: '产业新闻监控流', desc: '获取TechCrunch、MIT Tech Review等产业新闻' },
-            'WF5': { name: '产业动态捕获流', desc: '捕获会议、SEC文件、公司公告等产业动态' },
-            'WF6': { name: '竞争对手收集流', desc: '收集竞争对手相关情报和市场动态' },
+            'WF1': { name: '学术论文文献流', desc: '监控arXiv、Google Scholar、IEEE等学术论文数据源', layer: 'layer1', dependencies: [] },
+            'WF2': { name: '专利申请追踪流', desc: '追踪USPTO、EPO、Google Patents等专利申请', layer: 'layer1', dependencies: [] },
+            'WF3': { name: '开源项目监测流', desc: '监测GitHub、GitLab等开源项目动态', layer: 'layer1', dependencies: [] },
+            'WF4': { name: '产业新闻监控流', desc: '获取TechCrunch、MIT Tech Review等产业新闻', layer: 'layer1', dependencies: [] },
+            'WF5': { name: '产业动态捕获流', desc: '捕获会议、SEC文件、公司公告等产业动态', layer: 'layer1', dependencies: [] },
+            'WF6': { name: '竞争对手收集流', desc: '收集竞争对手相关情报和市场动态', layer: 'layer1', dependencies: [] },
             
             // WF7子组
-            'WF7-1': { name: '学术论文信号识别', desc: '从Raw_Academic_Papers表识别技术突破信号' },
-            'WF7-2': { name: '专利数据信号识别', desc: '从Raw_Patent_Data表识别专利突破信号' },
-            'WF7-3': { name: '开源项目信号识别', desc: '从Raw_OpenSource_Data表识别项目创新信号' },
-            'WF7-4': { name: '技术新闻信号识别', desc: '从Raw_Tech_News表识别新闻价值信号' },
-            'WF7-5': { name: '产业动态信号识别', desc: '从Raw_Industry_Dynamics表识别产业影响信号' },
-            'WF7-6': { name: '竞争情报信号识别', desc: '从Raw_Competitor_Intelligence表识别威胁信号' },
+            'WF7-1': { name: '学术论文信号识别', desc: '从Raw_Academic_Papers表识别技术突破信号', layer: 'wf7', dependencies: ['WF1'] },
+            'WF7-2': { name: '专利数据信号识别', desc: '从Raw_Patent_Data表识别专利突破信号', layer: 'wf7', dependencies: ['WF2'] },
+            'WF7-3': { name: '开源项目信号识别', desc: '从Raw_OpenSource_Data表识别项目创新信号', layer: 'wf7', dependencies: ['WF3'] },
+            'WF7-4': { name: '技术新闻信号识别', desc: '从Raw_Tech_News表识别新闻价值信号', layer: 'wf7', dependencies: ['WF4'] },
+            'WF7-5': { name: '产业动态信号识别', desc: '从Raw_Industry_Dynamics表识别产业影响信号', layer: 'wf7', dependencies: ['WF5'] },
+            'WF7-6': { name: '竞争情报信号识别', desc: '从Raw_Competitor_Intelligence表识别威胁信号', layer: 'wf7', dependencies: ['WF6'] },
             
             // WF8
-            'WF8': { name: '证据验证处理流', desc: '验证Tech_Intelligence_Master中情报的证据质量' },
+            'WF8': { name: '证据验证处理流', desc: '验证Tech_Intelligence_Master中情报的证据质量', layer: 'wf8', dependencies: ['WF7-1', 'WF7-2', 'WF7-3', 'WF7-4', 'WF7-5', 'WF7-6'] },
             
             // 其他层级
-            'WF9': { name: '商业价值分析流', desc: '分析技术的商业价值、市场潜力和投资回报' },
-            'WF10': { name: '竞争情报分析流', desc: '分析竞争态势、威胁等级和市场地位' },
-            'WF11': { name: '技术深度分析流', desc: '深度分析技术可行性、成熟度和实施路径' },
-            'WF12': { name: '情报整合决策流', desc: '整合所有分析结果，生成综合决策建议' },
-            'WF13': { name: '报告生成输出流', desc: '生成情报报告并分发到各个渠道' },
-            'WF14': { name: '数据质量监控流', desc: '监控数据质量、完整性和一致性' },
-            'WF15': { name: '系统健康检查流', desc: '检查系统运行状态和性能指标' }
+            'WF9': { name: '商业价值分析流', desc: '分析技术的商业价值、市场潜力和投资回报', layer: 'layer3', dependencies: ['WF8'] },
+            'WF10': { name: '竞争情报分析流', desc: '分析竞争态势、威胁等级和市场地位', layer: 'layer3', dependencies: ['WF8'] },
+            'WF11': { name: '技术深度分析流', desc: '深度分析技术可行性、成熟度和实施路径', layer: 'layer3', dependencies: ['WF8'] },
+            'WF12': { name: '情报整合决策流', desc: '整合所有分析结果，生成综合决策建议', layer: 'layer4', dependencies: ['WF9', 'WF10', 'WF11'] },
+            'WF13': { name: '报告生成输出流', desc: '生成情报报告并分发到各个渠道', layer: 'layer4', dependencies: ['WF12'] },
+            'WF14': { name: '数据质量监控流', desc: '监控数据质量、完整性和一致性', layer: 'layer5', dependencies: [] },
+            'WF15': { name: '系统健康检查流', desc: '检查系统运行状态和性能指标', layer: 'layer5', dependencies: [] }
         };
 
-        // 工作流配置存储
+        // 工作流配置和状态存储
         let configs = JSON.parse(localStorage.getItem('workflowConfigs')) || {};
+        let executionLogs = JSON.parse(localStorage.getItem('executionLogs')) || {};
 
         // 创建工作流项目
         function createWorkflowItem(id, def) {
-            const config = configs[id] || { webhookUrl: '', status: 'unconfigured' };
-            const statusClass = config.webhookUrl ? 'status-configured' : 'status-unconfigured';
-            const statusText = config.webhookUrl ? '✅ 已配置' : '❌ 未配置';
+            const config = configs[id] || { webhookUrl: '', status: 'unconfigured', lastRun: null, lastResult: null };
+            const statusInfo = getStatusInfo(config.status);
             
             return `
-                <div class="workflow-item">
+                <div class="workflow-item" id="item-${id}">
+                    <div class="status-indicator status-${config.status}">
+                        ${statusInfo.icon} ${statusInfo.text}
+                    </div>
                     <div class="workflow-info">
                         <div class="workflow-name">${id}: ${def.name}</div>
                         <div class="workflow-desc">${def.desc}</div>
-                        <span class="status ${statusClass}">${statusText}</span>
+                        <div class="workflow-details">
+                            <span>依赖: ${def.dependencies.length > 0 ? def.dependencies.join(', ') : '无'}</span>
+                            <span>最后运行: ${config.lastRun || '未运行'}</span>
+                        </div>
                     </div>
                     <div class="webhook-config">
                         <input type="url" 
@@ -224,38 +447,60 @@
                                placeholder="输入Make.com的Webhook URL"
                                value="${config.webhookUrl || ''}"
                                onchange="updateWebhook('${id}', this.value)">
-                        <button class="btn btn-test" 
-                                onclick="testWebhook('${id}')"
-                                ${!config.webhookUrl ? 'disabled' : ''}>🧪 测试</button>
-                        <button class="btn btn-run" 
-                                onclick="runWorkflow('${id}')"
-                                ${!config.webhookUrl ? 'disabled' : ''}>▶️ 运行</button>
+                        <div class="workflow-actions">
+                            <button class="btn btn-info" 
+                                    onclick="testConnection('${id}')"
+                                    ${!config.webhookUrl ? 'disabled' : ''}>🔌 连接测试</button>
+                            <button class="btn btn-success" 
+                                    onclick="runWorkflow('${id}')"
+                                    ${!config.webhookUrl ? 'disabled' : ''}>▶️ 运行</button>
+                            <button class="btn btn-primary" 
+                                    onclick="checkStatus('${id}')"
+                                    ${!config.webhookUrl ? 'disabled' : ''}>📊 查询状态</button>
+                            <button class="btn btn-secondary" 
+                                    onclick="toggleLog('${id}')">📋 日志</button>
+                        </div>
+                        <div class="execution-log" id="log-${id}"></div>
                     </div>
                 </div>
             `;
         }
 
-        // 更新Webhook配置
-        function updateWebhook(id, url) {
-            configs[id] = {
-                webhookUrl: url.trim(),
-                status: url.trim() ? 'configured' : 'unconfigured'
+        // 获取状态信息
+        function getStatusInfo(status) {
+            const statusMap = {
+                'unconfigured': { icon: '❌', text: '未配置' },
+                'configured': { icon: '⚙️', text: '已配置' },
+                'connected': { icon: '✅', text: '连接成功' },
+                'running': { icon: '🔄', text: '运行中' },
+                'completed': { icon: '✔️', text: '已完成' },
+                'error': { icon: '⚠️', text: '错误' }
             };
-            
-            localStorage.setItem('workflowConfigs', JSON.stringify(configs));
-            alert(`${id} Webhook已更新`);
-            renderWorkflows();
+            return statusMap[status] || statusMap['unconfigured'];
         }
 
-        // 测试Webhook
-        async function testWebhook(id) {
+        // 更新Webhook配置
+        function updateWebhook(id, url) {
+            if (!configs[id]) configs[id] = {};
+            configs[id].webhookUrl = url.trim();
+            configs[id].status = url.trim() ? 'configured' : 'unconfigured';
+            
+            saveConfigs();
+            showToast(`${id} Webhook已更新`, 'info');
+            renderWorkflows();
+            updateAllStats();
+        }
+
+        // 测试连接
+        async function testConnection(id) {
             const config = configs[id];
             if (!config || !config.webhookUrl) {
-                alert('请先配置Webhook URL');
+                showToast('请先配置Webhook URL', 'error');
                 return;
             }
 
-            alert(`正在测试 ${id}...`);
+            showToast(`正在测试 ${id} 连接...`, 'info');
+            updateWorkflowStatus(id, 'running');
 
             try {
                 const response = await fetch(config.webhookUrl, {
@@ -263,18 +508,26 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         test: true,
+                        action: 'connection_test',
                         workflow_id: id,
                         timestamp: new Date().toISOString()
                     })
                 });
 
                 if (response.ok) {
-                    alert(`${id} 测试成功！`);
+                    const result = await response.text();
+                    updateWorkflowStatus(id, 'connected');
+                    addExecutionLog(id, 'connection_test', 'success', `连接测试成功: ${result}`);
+                    showToast(`${id} 连接测试成功！`, 'success');
                 } else {
-                    alert(`${id} 测试失败: HTTP ${response.status}`);
+                    updateWorkflowStatus(id, 'error');
+                    addExecutionLog(id, 'connection_test', 'error', `连接测试失败: HTTP ${response.status}`);
+                    showToast(`${id} 连接测试失败: HTTP ${response.status}`, 'error');
                 }
             } catch (error) {
-                alert(`${id} 测试失败: ${error.message}`);
+                updateWorkflowStatus(id, 'error');
+                addExecutionLog(id, 'connection_test', 'error', `连接测试失败: ${error.message}`);
+                showToast(`${id} 连接测试失败: ${error.message}`, 'error');
             }
         }
 
@@ -282,31 +535,432 @@
         async function runWorkflow(id) {
             const config = configs[id];
             if (!config || !config.webhookUrl) {
-                alert('请先配置Webhook URL');
+                showToast('请先配置Webhook URL', 'error');
                 return;
             }
 
-            alert(`正在运行 ${id}...`);
+            // 检查依赖关系
+            const def = workflowDefs[id];
+            if (def.dependencies.length > 0) {
+                const unmetDeps = def.dependencies.filter(depId => {
+                    const depConfig = configs[depId];
+                    return !depConfig || depConfig.status !== 'completed';
+                });
+
+                if (unmetDeps.length > 0) {
+                    const proceed = confirm(`依赖项 ${unmetDeps.join(', ')} 可能未完成。确定继续运行吗？`);
+                    if (!proceed) return;
+                }
+            }
+
+            showToast(`正在运行 ${id}...`, 'info');
+            updateWorkflowStatus(id, 'running');
 
             try {
                 const response = await fetch(config.webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        trigger_source: 'workflow_manager',
+                        action: 'execute',
                         workflow_id: id,
                         timestamp: new Date().toISOString(),
-                        user: 'Jason'
+                        user: 'Jason',
+                        dependencies: def.dependencies
                     })
                 });
 
                 if (response.ok) {
-                    alert(`${id} 运行成功！`);
+                    const result = await response.text();
+                    updateWorkflowStatus(id, 'completed');
+                    config.lastRun = new Date().toLocaleString();
+                    config.lastResult = result;
+                    addExecutionLog(id, 'execute', 'success', `执行成功: ${result}`);
+                    showToast(`${id} 运行成功！`, 'success');
                 } else {
-                    alert(`${id} 运行失败: HTTP ${response.status}`);
+                    updateWorkflowStatus(id, 'error');
+                    addExecutionLog(id, 'execute', 'error', `执行失败: HTTP ${response.status}`);
+                    showToast(`${id} 运行失败: HTTP ${response.status}`, 'error');
                 }
             } catch (error) {
-                alert(`${id} 运行失败: ${error.message}`);
+                updateWorkflowStatus(id, 'error');
+                addExecutionLog(id, 'execute', 'error', `执行失败: ${error.message}`);
+                showToast(`${id} 运行失败: ${error.message}`, 'error');
+            }
+
+            saveConfigs();
+            renderWorkflows();
+        }
+
+        // 查询状态
+        async function checkStatus(id) {
+            const config = configs[id];
+            if (!config || !config.webhookUrl) {
+                showToast('请先配置Webhook URL', 'error');
+                return;
+            }
+
+            showToast(`正在查询 ${id} 状态...`, 'info');
+
+            try {
+                const response = await fetch(config.webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'status_check',
+                        workflow_id: id,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    addExecutionLog(id, 'status_check', 'success', `状态查询成功: ${result}`);
+                    showToast(`${id} 状态查询成功`, 'success');
+                    
+                    // 尝试解析状态
+                    try {
+                        const statusData = JSON.parse(result);
+                        if (statusData.status) {
+                                                        updateWorkflowStatus(id, statusData.status);
+                        }
+                    } catch (e) {
+                        // 如果不是JSON格式，保持当前状态
+                    }
+                } else {
+                    addExecutionLog(id, 'status_check', 'error', `状态查询失败: HTTP ${response.status}`);
+                    showToast(`${id} 状态查询失败: HTTP ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addExecutionLog(id, 'status_check', 'error', `状态查询失败: ${error.message}`);
+                showToast(`${id} 状态查询失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 更新工作流状态
+        function updateWorkflowStatus(id, status) {
+            if (!configs[id]) configs[id] = {};
+            configs[id].status = status;
+            
+            // 更新页面显示
+            const statusElement = document.querySelector(`#item-${id} .status-indicator`);
+            if (statusElement) {
+                const statusInfo = getStatusInfo(status);
+                statusElement.className = `status-indicator status-${status}`;
+                statusElement.innerHTML = `${statusInfo.icon} ${statusInfo.text}`;
+            }
+            
+            saveConfigs();
+            updateAllStats();
+        }
+
+        // 添加执行日志
+        function addExecutionLog(id, action, result, message) {
+            if (!executionLogs[id]) executionLogs[id] = [];
+            
+            const logEntry = {
+                timestamp: new Date().toLocaleString(),
+                action: action,
+                result: result,
+                message: message
+            };
+            
+            executionLogs[id].unshift(logEntry); // 最新的在前面
+            
+            // 只保留最近10条日志
+            if (executionLogs[id].length > 10) {
+                executionLogs[id] = executionLogs[id].slice(0, 10);
+            }
+            
+            localStorage.setItem('executionLogs', JSON.stringify(executionLogs));
+            updateLogDisplay(id);
+        }
+
+        // 更新日志显示
+        function updateLogDisplay(id) {
+            const logElement = document.getElementById(`log-${id}`);
+            if (!logElement || !executionLogs[id]) return;
+            
+            const logsHtml = executionLogs[id].map(log => {
+                const statusClass = log.result === 'success' ? 'text-success' : 'text-danger';
+                return `<div class="${statusClass}">
+                    [${log.timestamp}] ${log.action}: ${log.message}
+                </div>`;
+            }).join('');
+            
+            logElement.innerHTML = logsHtml || '<div>暂无日志</div>';
+        }
+
+        // 切换日志显示
+        function toggleLog(id) {
+            const logElement = document.getElementById(`log-${id}`);
+            if (logElement) {
+                logElement.classList.toggle('show-log');
+                updateLogDisplay(id);
+            }
+        }
+
+        // 运行整个层级
+        async function runLayer(layerId) {
+            const workflowIds = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === layerId);
+            const configuredWorkflows = workflowIds.filter(id => configs[id] && configs[id].webhookUrl);
+            
+            if (configuredWorkflows.length === 0) {
+                showToast(`${layerId} 没有已配置的工作流`, 'warning');
+                return;
+            }
+            
+            if (!confirm(`确定要运行 ${layerId} 的 ${configuredWorkflows.length} 个工作流吗？`)) return;
+            
+            showToast(`正在运行 ${layerId} (${configuredWorkflows.length} 个工作流)...`, 'info');
+            
+            // 并行执行
+            const promises = configuredWorkflows.map(id => runWorkflow(id));
+            await Promise.all(promises);
+            
+            showToast(`${layerId} 执行完成`, 'success');
+        }
+
+        // 运行WF7子组
+        async function runWF7Group() {
+            const wf7Ids = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === 'wf7');
+            const configuredWF7 = wf7Ids.filter(id => configs[id] && configs[id].webhookUrl);
+            
+            if (configuredWF7.length === 0) {
+                showToast('WF7子组没有已配置的工作流', 'warning');
+                return;
+            }
+            
+            if (!confirm(`确定要并行运行WF7子组的 ${configuredWF7.length} 个工作流吗？`)) return;
+            
+            showToast(`正在并行运行WF7子组 (${configuredWF7.length} 个工作流)...`, 'info');
+            
+            const promises = configuredWF7.map(id => runWorkflow(id));
+            await Promise.all(promises);
+            
+            showToast('WF7子组执行完成', 'success');
+        }
+
+        // 运行单个工作流
+        async function runSingleWorkflow(id) {
+            await runWorkflow(id);
+        }
+
+        // 检查层级状态
+        function checkLayerStatus(layerId) {
+            const workflowIds = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === layerId);
+            const statusSummary = workflowIds.map(id => {
+                const config = configs[id] || {};
+                const statusInfo = getStatusInfo(config.status || 'unconfigured');
+                return `${id}: ${statusInfo.text}`;
+            }).join('\n');
+            
+            alert(`${layerId} 状态报告:\n\n${statusSummary}`);
+        }
+
+        // 检查WF7状态
+        function checkWF7Status() {
+            checkLayerStatus('wf7');
+        }
+
+        // 检查单个工作流状态
+        function checkSingleStatus(id) {
+            checkStatus(id);
+        }
+
+        // 暂停层级
+        function pauseLayer(layerId) {
+            const workflowIds = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === layerId);
+            
+            workflowIds.forEach(id => {
+                if (configs[id] && configs[id].status === 'running') {
+                    updateWorkflowStatus(id, 'configured');
+                }
+            });
+            
+            showToast(`${layerId} 已暂停`, 'info');
+            renderWorkflows();
+        }
+
+        // 批量配置WF7
+        function batchConfigureWF7() {
+            const baseUrl = prompt('请输入WF7子组的Webhook基础URL:\n\n系统将为每个子工作流生成: baseUrl/wf7-1, baseUrl/wf7-2 等');
+            if (!baseUrl) return;
+            
+            const wf7Ids = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === 'wf7');
+            
+            wf7Ids.forEach(id => {
+                const suffix = id.toLowerCase().replace('-', '');
+                const fullUrl = `${baseUrl.replace(/\/$/, '')}/${suffix}`;
+                
+                if (!configs[id]) configs[id] = {};
+                configs[id].webhookUrl = fullUrl;
+                configs[id].status = 'configured';
+            });
+            
+            saveConfigs();
+            renderWorkflows();
+            updateAllStats();
+            showToast(`WF7子组批量配置完成 (${wf7Ids.length} 个工作流)`, 'success');
+        }
+
+        // 运行所有层级
+        async function runAllLayers() {
+            if (!confirm('确定要按顺序运行所有层级吗？这将按照依赖关系执行完整的工作流程。')) return;
+            
+            showToast('🚀 开始执行完整工作流程...', 'info');
+            
+            try {
+                // 第一层：数据采集
+                showToast('📥 执行第一层：数据采集...', 'info');
+                await runLayer('layer1');
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // WF7子组：信号识别
+                showToast('🎯 执行WF7子组：信号识别...', 'info');
+                await runWF7Group();
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // WF8：证据验证
+                showToast('🔍 执行WF8：证据验证...', 'info');
+                await runSingleWorkflow('WF8');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // 第三层：深度分析
+                showToast('📊 执行第三层：深度分析...', 'info');
+                await runLayer('layer3');
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // 第四层：决策支撑
+                showToast('🎯 执行第四层：决策支撑...', 'info');
+                await runLayer('layer4');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                showToast('🎉 完整工作流程执行完成！', 'success');
+            } catch (error) {
+                showToast(`执行过程中出错: ${error.message}`, 'error');
+            }
+        }
+
+        // 刷新所有状态
+        async function refreshAllStatus() {
+            showToast('正在刷新所有工作流状态...', 'info');
+            
+            const allIds = Object.keys(workflowDefs);
+            const configuredIds = allIds.filter(id => configs[id] && configs[id].webhookUrl);
+            
+            for (const id of configuredIds) {
+                await checkStatus(id);
+                await new Promise(resolve => setTimeout(resolve, 500)); // 避免并发过多
+            }
+            
+            showToast('所有状态刷新完成', 'success');
+        }
+
+        // 暂停所有工作流
+        function pauseAllWorkflows() {
+            if (!confirm('确定要暂停所有工作流吗？')) return;
+            
+            Object.keys(configs).forEach(id => {
+                if (configs[id].status === 'running') {
+                    updateWorkflowStatus(id, 'configured');
+                }
+            });
+            
+            showToast('所有工作流已暂停', 'info');
+            renderWorkflows();
+        }
+
+        // 显示系统状态报告
+        function showSystemStatus() {
+            const allIds = Object.keys(workflowDefs);
+            const configuredCount = allIds.filter(id => configs[id] && configs[id].webhookUrl).length;
+            const connectedCount = allIds.filter(id => configs[id] && configs[id].status === 'connected').length;
+            const runningCount = allIds.filter(id => configs[id] && configs[id].status === 'running').length;
+            const completedCount = allIds.filter(id => configs[id] && configs[id].status === 'completed').length;
+            const errorCount = allIds.filter(id => configs[id] && configs[id].status === 'error').length;
+            
+            const report = `
+🎯 ICT技术情报系统状态报告
+
+📊 总体统计:
+• 总工作流: ${allIds.length}
+• 已配置: ${configuredCount}
+• 连接成功: ${connectedCount}
+• 运行中: ${runningCount}
+• 已完成: ${completedCount}
+• 错误状态: ${errorCount}
+
+📈 配置率: ${Math.round(configuredCount / allIds.length * 100)}%
+📈 连接率: ${Math.round(connectedCount / allIds.length * 100)}%
+
+🔍 分层统计:
+• 第一层 (数据采集): ${getLayerStats('layer1')}
+• WF7子组 (信号识别): ${getLayerStats('wf7')}
+• WF8 (证据验证): ${getLayerStats('wf8')}
+• 第三层 (深度分析): ${getLayerStats('layer3')}
+• 第四层 (决策支撑): ${getLayerStats('layer4')}
+• 第五层 (系统维护): ${getLayerStats('layer5')}
+            `;
+            
+            alert(report);
+        }
+
+        // 获取层级统计
+        function getLayerStats(layerId) {
+            const workflowIds = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === layerId);
+            const configuredCount = workflowIds.filter(id => configs[id] && configs[id].webhookUrl).length;
+            return `${configuredCount}/${workflowIds.length} 已配置`;
+        }
+
+        // 导出配置
+        function exportConfigs() {
+            const exportData = {
+                configs: configs,
+                executionLogs: executionLogs,
+                exportTime: new Date().toISOString(),
+                version: '2.1.0'
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ict-workflow-configs-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('配置已导出', 'success');
+        }
+
+        // 更新所有统计
+        function updateAllStats() {
+            const layers = ['layer1', 'wf7', 'wf8', 'layer3', 'layer4', 'layer5'];
+            
+            layers.forEach(layerId => {
+                const workflowIds = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === layerId);
+                const configuredCount = workflowIds.filter(id => configs[id] && configs[id].webhookUrl).length;
+                
+                const statsElement = document.getElementById(`${layerId}-stats`);
+                if (statsElement) {
+                    statsElement.textContent = `${configuredCount}/${workflowIds.length} 已配置`;
+                }
+            });
+            
+            // 更新全局状态
+            const allIds = Object.keys(workflowDefs);
+            const configuredCount = allIds.filter(id => configs[id] && configs[id].webhookUrl).length;
+            const runningCount = allIds.filter(id => configs[id] && configs[id].status === 'running').length;
+            
+            const globalStatus = document.getElementById('global-status');
+            if (globalStatus) {
+                if (runningCount > 0) {
+                    globalStatus.textContent = `${runningCount} 个工作流运行中`;
+                } else {
+                    globalStatus.textContent = `${configuredCount}/${allIds.length} 已配置`;
+                }
             }
         }
 
@@ -347,8 +1001,41 @@
             document.getElementById('layer5').innerHTML = layer5Html;
         }
 
+        // 保存配置
+        function saveConfigs() {
+            localStorage.setItem('workflowConfigs', JSON.stringify(configs));
+        }
+
+        // 显示提示消息
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
         // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', renderWorkflows);
+        document.addEventListener('DOMContentLoaded', function() {
+            renderWorkflows();
+            updateAllStats();
+            showToast('🎯 ICT工作流状态管理器已就绪！', 'success');
+        });
+
+        // 定时自动保存
+        setInterval(saveConfigs, 30000);
+
+        // 页面卸载前保存
+        window.addEventListener('beforeunload', saveConfigs);
     </script>
 </body>
 </html>
