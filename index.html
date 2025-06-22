@@ -533,6 +533,36 @@
             transform: rotate(180deg);
         }
         
+        /* 第二层特殊样式 */
+        .layer-2-section {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .layer-2-header {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .layer-2-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .layer-2-content.expanded {
+            max-height: 2000px;
+        }
+        
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
@@ -560,7 +590,7 @@
         }
         
         /* 触摸优化 */
-        .btn, .workflow-item, .fab, .fab-item {
+        .btn, .workflow-item, .fab, .fab-item, .collapsible-header, .layer-2-header {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
@@ -666,42 +696,54 @@
                 </div>
             </div>
             
-            <!-- WF7子组 -->
+            <!-- 第二层整体容器 -->
             <div class="collapsible-section">
-                <div class="collapsible-header" onclick="toggleSection('wf7-section')">
-                    <span>🎯 WF7信号识别组</span>
+                <div class="collapsible-header" onclick="toggleSection('layer2-section')">
+                    <span>🎯 第二层：信号识别与证据验证</span>
                     <div>
-                        <span class="layer-stats" id="wf7-stats">0/6 配置</span>
-                        <span class="collapse-icon" id="wf7-icon">▼</span>
+                        <span class="layer-stats" id="layer2-stats">0/7 配置</span>
+                        <span class="collapse-icon" id="layer2-icon">▼</span>
                     </div>
                 </div>
-                <div class="collapsible-content" id="wf7-section">
-                    <div class="layer-controls">
-                        <button class="btn btn-success" onclick="runWF7Group()">▶️ 运行WF7</button>
-                        <button class="btn btn-info" onclick="checkWF7Status()">📊 WF7状态</button>
-                        <button class="btn btn-secondary" onclick="batchConfigureWF7()">⚙️ 批量配置</button>
-                        <button class="btn btn-warning" onclick="pauseLayer('wf7')">⏸️ 暂停WF7</button>
+                <div class="collapsible-content" id="layer2-section">
+                    <!-- WF7子组 -->
+                    <div class="layer-2-section">
+                        <div class="layer-2-header" onclick="toggleLayer2Section('wf7-section')">
+                            <span>🎯 WF7信号识别组 (并行执行)</span>
+                            <div>
+                                <span class="layer-stats" id="wf7-stats">0/6 配置</span>
+                                <span class="collapse-icon" id="wf7-icon">▼</span>
+                            </div>
+                        </div>
+                        <div class="layer-2-content" id="wf7-section">
+                            <div class="layer-controls">
+                                <button class="btn btn-success" onclick="runWF7Group()">▶️ 运行WF7</button>
+                                <button class="btn btn-info" onclick="checkWF7Status()">📊 WF7状态</button>
+                                <button class="btn btn-secondary" onclick="batchConfigureWF7()">⚙️ 批量配置</button>
+                                <button class="btn btn-warning" onclick="pauseLayer('wf7')">⏸️ 暂停WF7</button>
+                            </div>
+                            <div class="workflows" id="wf7-group"></div>
+                        </div>
                     </div>
-                    <div class="workflows" id="wf7-group"></div>
-                </div>
-            </div>
-            
-            <!-- WF8 -->
-            <div class="collapsible-section">
-                <div class="collapsible-header" onclick="toggleSection('wf8-section')">
-                    <span>🔍 WF8证据验证</span>
-                    <div>
-                        <span class="layer-stats" id="wf8-stats">0/1 配置</span>
-                        <span class="collapse-icon" id="wf8-icon">▼</span>
+                    
+                    <!-- WF8 -->
+                    <div class="layer-2-section">
+                        <div class="layer-2-header" onclick="toggleLayer2Section('wf8-section')">
+                            <span>🔍 WF8证据验证处理流</span>
+                            <div>
+                                <span class="layer-stats" id="wf8-stats">0/1 配置</span>
+                                <span class="collapse-icon" id="wf8-icon">▼</span>
+                            </div>
+                        </div>
+                        <div class="layer-2-content" id="wf8-section">
+                            <div class="layer-controls">
+                                <button class="btn btn-success" onclick="runSingleWorkflow('WF8')">▶️ 运行</button>
+                                <button class="btn btn-info" onclick="checkSingleStatus('WF8')">📊 状态</button>
+                                <button class="btn btn-secondary" onclick="resetWorkflow('WF8')">🔄 重置</button>
+                            </div>
+                            <div class="workflows" id="wf8"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="collapsible-content" id="wf8-section">
-                    <div class="layer-controls">
-                        <button class="btn btn-success" onclick="runSingleWorkflow('WF8')">▶️ 运行</button>
-                        <button class="btn btn-info" onclick="checkSingleStatus('WF8')">📊 状态</button>
-                        <button class="btn btn-secondary" onclick="resetWorkflow('WF8')">🔄 重置</button>
-                    </div>
-                    <div class="workflows" id="wf8"></div>
                 </div>
             </div>
             
@@ -763,7 +805,7 @@
                     </div>
                     <div class="workflows" id="layer5"></div>
                 </div>
-            </div>
+                        </div>
         </div>
     </div>
 
@@ -798,7 +840,7 @@
                 <span id="metric-config-rate">0%</span>
             </div>
         </div>
-<div style="text-align: center; margin-top: 8px; font-size: 0.6rem; opacity: 0.8;">
+        <div style="text-align: center; margin-top: 8px; font-size: 0.6rem; opacity: 0.8;">
             上次更新: <span id="metric-last-update">--:--</span>
         </div>
     </div>
@@ -914,6 +956,22 @@
 
         // 切换折叠区域
         function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const icon = document.getElementById(sectionId.replace('-section', '-icon'));
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.classList.remove('rotated');
+                icon.textContent = '▼';
+            } else {
+                content.classList.add('expanded');
+                icon.classList.add('rotated');
+                icon.textContent = '▲';
+            }
+        }
+
+        // 切换第二层子区域
+        function toggleLayer2Section(sectionId) {
             const content = document.getElementById(sectionId);
             const icon = document.getElementById(sectionId.replace('-section', '-icon'));
             
@@ -1387,7 +1445,7 @@
                 return;
             }
             
-            if (!confirm(`确定要暂停 ${getLayerName(layerId)} 的 ${runningIds.length} 个工作流吗？`)) return;
+                       if (!confirm(`确定要暂停 ${getLayerName(layerId)} 的 ${runningIds.length} 个工作流吗？`)) return;
             
             runningIds.forEach(id => {
                 updateWorkflowStatus(id, 'paused');
@@ -1435,7 +1493,7 @@
             const confirmation = confirm(`🚀 完整工作流程执行确认\n\n将按顺序执行所有层级，整个过程可能需要较长时间。\n\n确定继续吗？`);
             
             if (!confirmation) return;
-    
+            
             showToast('🚀 开始执行完整工作流程...', 'info');
             const globalStartTime = Date.now();
             
@@ -1695,6 +1753,28 @@ ${runningCount > 5 ? '\n🔄 当前有较多工作流在运行，请注意系统
                     }
                 }
             });
+            
+            // 更新第二层总统计
+            const layer2WorkflowIds = Object.keys(workflowDefs).filter(id => workflowDefs[id].layer === 'wf7' || workflowDefs[id].layer === 'wf8');
+            const layer2ConfiguredCount = layer2WorkflowIds.filter(id => configs[id] && configs[id].webhookUrl).length;
+            const layer2RunningCount = layer2WorkflowIds.filter(id => configs[id] && configs[id].status === 'running').length;
+            const layer2CompletedCount = layer2WorkflowIds.filter(id => configs[id] && configs[id].status === 'completed').length;
+            const layer2ErrorCount = layer2WorkflowIds.filter(id => configs[id] && configs[id].status === 'error').length;
+            
+            const layer2StatsElement = document.getElementById('layer2-stats');
+            if (layer2StatsElement) {
+                const layer2StatusText = layer2RunningCount > 0 ? `${layer2RunningCount} 运行中` :
+                                       layer2CompletedCount > 0 ? `${layer2CompletedCount} 已完成` :
+                                       layer2ErrorCount > 0 ? `${layer2ErrorCount} 错误` :
+                                       `${layer2ConfiguredCount}/${layer2WorkflowIds.length} 配置`;
+                
+                const textNode = layer2StatsElement.childNodes[layer2StatsElement.childNodes.length - 1];
+                if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+                    textNode.textContent = layer2StatusText;
+                } else {
+                    layer2StatsElement.appendChild(document.createTextNode(layer2StatusText));
+                }
+            }
             
             // 更新全局状态和进度条
             const allIds = Object.keys(workflowDefs);
